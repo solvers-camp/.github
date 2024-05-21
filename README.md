@@ -36,6 +36,11 @@
   It performs code analysis using Pylint to check for unused imports in Python files.
   If there are any unused imports detected.It will likely fail the workflow run, indicating that the pull request contains unused imports that need to be addressed before merging.
 
+## Workflow : 7
+  ## codeql-analysis.yml
+  The workflow triggers on pushes to specific branches, pull requests to the current branch, and on a scheduled cron job.
+  It is designed to analyze code using GitHub's CodeQL, a tool for identifying vulnerabilities and errors in codebases.
+
 ## Workflow : 8
   ## label-backport.yml
   This workflow is designed to listen for comments on issues or pull requests.
