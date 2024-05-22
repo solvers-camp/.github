@@ -1,8 +1,12 @@
 # VYOS
 
-## Repository:-  vyos-1x
+## Workflow : add-pr-labels.yml
+   **Purpose**: This workflow is designed to add labels automatically to pull requests based on the configuration file.
+   **Trigger**: The workflow can be called by other workflows.
+   **Job**:     The job add-pr-label checks out a repository containing _reusable actions_, and uses the ***actions/labeler*** action to label pull requests.
+   **Permissions**:   The workflow has read access to the repository contents and write access to pull requests.
+   **Configuration**: The labeler action uses a configuration file located in a checked-out repository directory.
 
-### Workflow : add-pr-labels.yml
   To trigger this workflow, you need to create a pull request that targets one of the specified branches (current, crux, equuleus, or sagitta).
   When a pull request is made to the repository, the tool will check the base branch of the pull request.
   If the base branch matches one of the branches, the corresponding branch will be applied as label to the pull request automatically.
