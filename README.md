@@ -40,9 +40,15 @@
 
 
 ### Workflow : check-pr-message.yml
-  To trigger this workflow, you need to create a pull request that targets one of the specified branches (current, crux, equuleus).
-  It automatically verifies whether the commit message and titles of pull requests (PRs) meet certain formatting rules  whenever a PR is made to the specified branches (current, crux, equuleus).
+- **Purpose**: This workflow verifies whether the commit message and titles of pull requests meet certain formatting rules whenever a PR is made.
+  
+- **Trigger**: The workflow can be called by other workflows.
+   
+- **Job**: This runs a Python script located at **./reusable-actions/scripts/check-pr-title-and-commit-messages.py**. The script is passed the URL of the pull request as an argument. The URL is accessed using **${{ github.event.pull_request.url }}**, which is a GitHub Actions context expression that provides the URL of the pull request triggering the workflow.
+   
+- **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
+  
 ### Workflow : check-stale.yml
   This workflow is triggered, whenever a pull request is made targeting any of the specified branches: current, crux, equuleus, or sagitta and sets up a cron job that runs the workflow every day at midnight UTC.
   It marks issues as stale if there has been no activity for 90 days and pull requests as stale if there has been no activity for 30 days. 
