@@ -1,6 +1,6 @@
 ### SOLVERSCAMP TEAM
 
-[Link to my PDF](URL)
+[Link to my PDF](https://github.com/solvers-camp/.github/blob/main/SolversCampTeam-21-05-2024.pptx)
 
 
 VyOS is a fully open-source Linux-based OS for network devices. It focuses on enterprise, service provider, and network geek audiences and includes:
