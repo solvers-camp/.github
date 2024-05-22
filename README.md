@@ -27,7 +27,7 @@
   
 - **Trigger**: The workflow can be called by other workflows.
    
-- **Job**: eps1lon/actions-label-merge-conflict@v3  — specifies the action to use.
+- **Job**: **eps1lon/actions-label-merge-conflict@v3**  — specifies the action to use.
     - **With:**
       - dirtyLabel: **"state: conflict"** — label to add if there are conflicts.
       - removeOnDirtyLabel: **"state: conflict resolved"** — label to remove when conflicts are resolved.
@@ -39,7 +39,7 @@
 - **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
 
-### Workflow : check-pr-message.yml
+## Workflow : check-pr-message.yml
 - **Purpose**: This workflow verifies whether the commit message and titles of pull requests meet certain formatting rules whenever a PR is made.
   
 - **Trigger**: The workflow can be called by other workflows.
@@ -49,14 +49,25 @@
 - **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
   
-### Workflow : check-stale.yml
-  This workflow is triggered, whenever a pull request is made targeting any of the specified branches: current, crux, equuleus, or sagitta and sets up a cron job that runs the workflow every day at midnight UTC.
-  It marks issues as stale if there has been no activity for 90 days and pull requests as stale if there has been no activity for 30 days. 
-  It adds a "state: stale" label and a predefined message to these stale issues and pull requests. However, it does not automatically close them. The issue will be reviewed by a maintainer and may be closed.
-  Issues and pull requests with labels like "state: accepted" or "state: in-progress" are exempt from being marked as stale. 
-  This helps maintainers manage and prioritize active and inactive issues and PR in the repository.
+## Workflow : check-stale.yml
+- **Purpose**: This action manages stale issues and pull requests by marking them with a label and optionally closing them after a period of inactivity.
+  
+- **Trigger**: The workflow can be called by other workflows.
+   
+- **Job**: **actions/stale@v6** — uses the stale action to manage stale issues and pull requests.
+    - _repo-token_: ${{ secrets.GITHUB_TOKEN }} — authentication token for the action.
+    - _days-before-stale_: **90** — days of inactivity before marking an issue as stale.
+    - _days-before-close_: *-1* — prevents automatic closing of stale issues.
+    - _stale-issue-message_ — message to post on stale issues.
+    - _stale-issue-label_: '**state: stale**' — label to add to stale issues.
+    - _exempt-issue-labels_: '**state: accepted, state: in-progress**' — labels that exempt issues from being marked as stale.
+    - _stale-pr-message_ — message to post on stale pull requests.
+    - _stale-pr-label_: '**state: stale**' — label to add to stale pull requests.
+    - _exempt-pr-labels_: '**state: accepted, state: in-progress**' — labels that exempt pull requests from being marked as stale.
+   
+- **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
-### Workflow : check-unused-imports.yml
+## Workflow : check-unused-imports.yml
   To trigger this workflow, you need to create a pull request that targets one of the specified branches (current, sagitta).
   It performs code analysis using Pylint to check for unused imports in Python files.
   If there are any unused imports detected, it will fail the workflow run, indicating that the pull request contains unused imports that need to be addressed before merging.
