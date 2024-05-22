@@ -90,11 +90,11 @@
         - codeql-cfg-path: **Path** to a CodeQL configuration file, if provided.
         - build-command: **Manual** build command, if **provided**.
 
-    - **Strategy**:
+    - **Strategy**
         - fail-fast: false — ensures the workflow does not cancel all jobs if one fails.
         - matrix — runs the job for each specified language.
 
-    - **Steps**:
+    - **Steps**
         - Checkout the Repository: Uses actions/checkout@v4 to check out the repository code.
         - Initialize CodeQL: Uses **_github/codeql-action/init@v3_** to initialize CodeQL with the specified languages and configuration file.
         - Autobuild: Uses **_github/codeql-action/autobuild@v3_** to automatically build the code if no build command is provided.
@@ -102,9 +102,9 @@
         - Perform CodeQL Analysis: Uses **_github/codeql-action/analyze@v3_** to analyze the code for vulnerabilities, bugs, and other errors.
   
 - **Permissions**:
-    - actions: read — allows the workflow to read actions.
-    - contents: read — allows the workflow to read the repository contents.
-    - security-events: write — allows the workflow to write security events.
+    - _actions_: read — allows the workflow to read actions.
+    - _contents_: read — allows the workflow to read the repository contents.
+    - _security-events_: write — allows the workflow to write security events.
   
 ### Workflow : label-backport.yml
   This workflow is designed to listen for comments on issues or pull requests.
