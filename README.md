@@ -1,21 +1,27 @@
 # VYOS
 
 ## Workflow : add-pr-labels.yml
-   **Purpose**: This workflow is designed to add labels automatically to pull requests based on the configuration file.
-   **Trigger**: The workflow can be called by other workflows.
-   **Job**:     The job add-pr-label checks out a repository containing _reusable actions_, and uses the ***actions/labeler*** action to label pull requests.
-   **Permissions**:   The workflow has read access to the repository contents and write access to pull requests.
-   **Configuration**: The labeler action uses a configuration file located in a checked-out repository directory.
+- **Purpose**: This workflow is designed to add labels automatically to pull requests based on the configuration file.
+   
+- **Trigger**: The workflow can be called by other workflows.
+   
+- **Job**: The job add-pr-label checks out a repository containing _reusable actions_, and uses the ***actions/labeler*** action to label pull requests.
+   
+- **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
+   
+- **Configuration**: The labeler action uses a configuration file located in a checked-out repository directory.
 
-  To trigger this workflow, you need to create a pull request that targets one of the specified branches (current, crux, equuleus, or sagitta).
-  When a pull request is made to the repository, the tool will check the base branch of the pull request.
-  If the base branch matches one of the branches, the corresponding branch will be applied as label to the pull request automatically.
 
-### Workflow : assign-author.yml
-  This workflow is triggered when pull requests are opened, reopened, marked as ready for review, or locked. 
-  Its purpose is to automatically assign the author of the pull request to the pull request itself.
-  This helps in organizing and triaging pull requests.
+## Workflow : assign-author.yml
+- **Purpose**: This workflow is designed automatically to assign the _**author**_ of a pull request (PR) as the _**assignee**_ of that PR.
+  
+- **Trigger**: The workflow can be called by other workflows.
+   
+- **Job**: The ***toshimaru/auto-author-assign@v1.6.2*** action automates the assignment of pull request _**authors**_ as the _**assignees**_ for their PRs.
+   
+- **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
+   
 ### Workflow : check-pr-merge-conflict.yml
   This workflow triggers whenever a pull request is synchronized. 
   It will checks if the pull request has merge conflicts and updates labels and comments accordingly.
