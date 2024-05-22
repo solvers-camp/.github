@@ -68,9 +68,16 @@
 - **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
 ## Workflow : check-unused-imports.yml
-  To trigger this workflow, you need to create a pull request that targets one of the specified branches (current, sagitta).
-  It performs code analysis using Pylint to check for unused imports in Python files.
-  If there are any unused imports detected, it will fail the workflow run, indicating that the pull request contains unused imports that need to be addressed before merging.
+- **Purpose**: This workflow performs code analysis using Pylint to check for unused imports in Python files.
+  
+- **Trigger**: The workflow can be called by other workflows.
+   
+- **Job**: pylint to check for unused imports (W0611) in Python files and files in the src/migration-scripts directory.
+     - pylint_files=$(git ls-files *.py src/migration-scripts): This command uses git ls-files to list all .py files and files in the src/migration-scripts directory, storing the result in the pylint_files variable.
+     - pylint --disable=all --enable=W0611 $pylint_files: This command runs pylint on the files listed in pylint_files. The --disable=all option disables all checks, and --enable=W0611 enables only the check for unused imports (W0611).
+   
+- **Permissions**: The workflow has read access to the repository contents.
+
 
 ### Workflow : codeql-analysis.yml
   The workflow triggers on pushes to specific branches, pull requests to the current branch, and on a scheduled cron job.
