@@ -79,10 +79,33 @@
 - **Permissions**: The workflow has read access to the repository contents.
 
 
-### Workflow : codeql-analysis.yml
-  The workflow triggers on pushes to specific branches, pull requests to the current branch, and on a scheduled cron job.
-  It is designed to analyze code using GitHub's CodeQL, a tool for identifying vulnerabilities and errors in codebases.
+## Workflow : codeql-analysis.yml
+- **Purpose**: This workflow analyze code using GitHub's CodeQL, a tool for identifying vulnerabilities and errors in codebases.
+  
+- **Trigger**: The workflow can be called by other workflows.
+   
+- **Job**:
+    - **Input**
+        - languages: Specifies the **languages** for CodeQL to analyze.
+        - codeql-cfg-path: **Path** to a CodeQL configuration file, if provided.
+        - build-command: **Manual** build command, if **provided**.
 
+    - **Strategy**:
+        - fail-fast: false — ensures the workflow does not cancel all jobs if one fails.
+        - matrix — runs the job for each specified language.
+
+    - **Steps**:
+        - Checkout the Repository: Uses actions/checkout@v4 to check out the repository code.
+        - Initialize CodeQL: Uses **_github/codeql-action/init@v3_** to initialize CodeQL with the specified languages and configuration file.
+        - Autobuild: Uses **_github/codeql-action/autobuild@v3_** to automatically build the code if no build command is provided.
+        - Manual Build: Executes the provided build command if specified.
+        - Perform CodeQL Analysis: Uses **_github/codeql-action/analyze@v3_** to analyze the code for vulnerabilities, bugs, and other errors.
+  
+- **Permissions**:
+    - actions: read — allows the workflow to read actions.
+    - contents: read — allows the workflow to read the repository contents.
+    - security-events: write — allows the workflow to write security events.
+  
 ### Workflow : label-backport.yml
   This workflow is designed to listen for comments on issues or pull requests.
   If a comment contains the command "@mergifyio backport" (in any case variation[MERFIFYIO/Mergifyio]), it automatically assigns "backport" label to that issue or pull request.
