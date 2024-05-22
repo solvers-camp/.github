@@ -22,9 +22,22 @@
 - **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
    
-### Workflow : check-pr-merge-conflict.yml
-  This workflow triggers whenever a pull request is synchronized. 
-  It will checks if the pull request has merge conflicts and updates labels and comments accordingly.
+## Workflow : check-pr-merge-conflict.yml
+- **Purpose**: This action checks if the pull request can be merged _**cleanly**_ or if there are _**merge conflicts**_.
+  
+- **Trigger**: The workflow can be called by other workflows.
+   
+- **Job**: eps1lon/actions-label-merge-conflict@v3  — specifies the action to use.
+    - **With:**
+      - dirtyLabel: **"state: conflict"** — label to add if there are conflicts.
+      - removeOnDirtyLabel: **"state: conflict resolved"** — label to remove when conflicts are resolved.
+      - repoToken: "${{ secrets.GITHUB_TOKEN }}" — authentication token for the action.
+      - commentOnDirty: **"This pull request has conflicts, please resolve those before we can evaluate the pull request."** — comment to post if there are
+        conflicts.
+      - commentOnClean: **"Conflicts have been resolved. A maintainer will review the pull request shortly."** — comment to post if conflicts are resolved.
+   
+- **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
+
 
 ### Workflow : check-pr-message.yml
   To trigger this workflow, you need to create a pull request that targets one of the specified branches (current, crux, equuleus).
