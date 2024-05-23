@@ -125,7 +125,15 @@
 
 - **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
-### Workflow : lint-j2.yml
-  To trigger this workflow, you need to create a pull request that targets one of the specified branches (current, crux, equuleus).
-  J2Lint is a linter for Jinja2 templates.
-  It runs the J2Lint tool to lint Jinja2 files located in the $GITHUB_WORKSPACE/data directory.
+## Workflow : lint-j2.yml
+- **Purpose**: This workflow is designed to validate Jinja2 (J2) template files using J2 lint tool
+  
+- **Trigger**: on pull_request, workflow_dispatch
+   
+- **Job**:
+    - sudo pip install **git+https://github.com/aristanetworks/j2lint.git@341b5d5db86e095b622f09770cb6367a1583620e** Installs the **j2lint tool** from a specific commit of its GitHub repository using pip with sudo to ensure necessary permissions
+
+    - j2lint **$GITHUB_WORKSPACE/data** Runs the j2lint tool on the data directory within the checked-out repository.
+
+   
+- **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
