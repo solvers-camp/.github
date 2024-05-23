@@ -3,7 +3,7 @@
 ## Workflow : add-pr-labels.yml
 - **Purpose**: This workflow is designed to add labels automatically to pull requests based on the configuration file.
    
-- **Trigger**: The workflow can be called by other workflows.
+- **Trigger**: on pull_request_target
    
 - **Job**: The job add-pr-label checks out a repository containing _reusable actions_, and uses the ***actions/labeler*** action to label pull requests.
    
@@ -15,7 +15,7 @@
 ## Workflow : assign-author.yml
 - **Purpose**: This workflow is designed automatically to assign the _**author**_ of a pull request (PR) as the _**assignee**_ of that PR.
   
-- **Trigger**: The workflow can be called by other workflows.
+- **Trigger**: on pull_request_target types: [opened, reopened, ready_for_review, locked]
    
 - **Job**: The ***toshimaru/auto-author-assign@v1.6.2*** action automates the assignment of pull request _**authors**_ as the _**assignees**_ for their PRs.
    
@@ -25,7 +25,7 @@
 ## Workflow : check-pr-merge-conflict.yml
 - **Purpose**: This action checks if the pull request can be merged _**cleanly**_ or if there are _**merge conflicts**_.
   
-- **Trigger**: The workflow can be called by other workflows.
+- **Trigger**: on pull_request_target [types:synchronize]
    
 - **Job**: **eps1lon/actions-label-merge-conflict@v3**  — specifies the action to use.
     - **With:**
@@ -42,7 +42,7 @@
 ## Workflow : check-pr-message.yml
 - **Purpose**: This workflow verifies whether the commit message and titles of pull requests meet certain formatting rules whenever a PR is made.
   
-- **Trigger**: The workflow can be called by other workflows.
+- **Trigger**: on pull_request
    
 - **Job**: This runs a Python script located at **./reusable-actions/scripts/check-pr-title-and-commit-messages.py**. The script is passed the URL of the pull request as an argument. The URL is accessed using **${{ github.event.pull_request.url }}**, which is a GitHub Actions context expression that provides the URL of the pull request triggering the workflow.
    
@@ -52,7 +52,7 @@
 ## Workflow : check-stale.yml
 - **Purpose**: This action manages stale issues and pull requests by marking them with a label and optionally closing them after a period of inactivity.
   
-- **Trigger**: The workflow can be called by other workflows.
+- **Trigger**: on schedule 
    
 - **Job**: **actions/stale@v6** — uses the stale action to manage stale issues and pull requests.
     - _repo-token_: ${{ secrets.GITHUB_TOKEN }} — authentication token for the action.
@@ -70,7 +70,7 @@
 ## Workflow : check-unused-imports.yml
 - **Purpose**: This workflow performs code analysis using Pylint to check for unused imports in Python files.
   
-- **Trigger**: The workflow can be called by other workflows.
+- **Trigger**: on on pull_request, workflow_dispatch
    
 - **Job**: pylint to check for unused imports (W0611) in Python files and files in the src/migration-scripts directory.
      - pylint_files=$(git ls-files *.py src/migration-scripts): This command uses git ls-files to list all .py files and files in the src/migration-scripts directory, storing the result in the pylint_files variable.
@@ -82,7 +82,7 @@
 ## Workflow : codeql-analysis.yml
 - **Purpose**: This workflow analyze code using GitHub's CodeQL, a tool for identifying vulnerabilities and errors in codebases.
   
-- **Trigger**: The workflow can be called by other workflows.
+- **Trigger**: on pull_request, push, schedule
    
 - **Job**:
     - **Input**
@@ -109,8 +109,8 @@
 ## Workflow : label-backport.yml
 - **Purpose**: This workflow is designed to listen for comments on issues or pull requests. If comments found label updated as 'backport'.
   
-- **Trigger**: Triggers when issue_workflow occurs.
-   
+- **Trigger**: on issue_comment
+  
 - **Job**:
      - The actions **ecosystem/action-regex-match@v2** used to perform a regular expression match.
          - **with**: Defines the inputs for the action.
@@ -135,5 +135,4 @@
 
     - j2lint **$GITHUB_WORKSPACE/data** Runs the j2lint tool on the data directory within the checked-out repository.
 
-   
 - **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
