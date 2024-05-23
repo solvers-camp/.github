@@ -106,9 +106,24 @@
     - _contents_: read — allows the workflow to read the repository contents.
     - _security-events_: write — allows the workflow to write security events.
   
-### Workflow : label-backport.yml
-  This workflow is designed to listen for comments on issues or pull requests.
-  If a comment contains the command "@mergifyio backport" (in any case variation[MERFIFYIO/Mergifyio]), it automatically assigns "backport" label to that issue or pull request.
+## Workflow : label-backport.yml
+- **Purpose**: This workflow is designed to listen for comments on issues or pull requests. If comments found label updated as 'backport'.
+  
+- **Trigger**: Triggers when issue_workflow occurs.
+   
+- **Job**:
+     - The actions **ecosystem/action-regex-match@v2** used to perform a regular expression match.
+         - **with**: Defines the inputs for the action.
+              - text: ${{ github.event.comment.body }}: Specifies the text to match against, which in this case is the body of the GitHub event comment.
+              - regex: '@[Mm][Ee][Rr][Gg][Ii][Ff][Yy][Ii][Oo] backport ': The regular expression pattern to match. It looks for the text @mergifyio backport in a case-insensitive manner.
+
+     - The actions **ecosystem/action-add-labels@v1** used to add labels to the pull request.
+          - if: ${{ steps.regex-match.outputs.match != '' }}: This condition checks if the previous regex match step was successful. It only runs this step if a match was found.
+              - **with**: Defines the inputs for the action.
+                   - labels: **_backport_**: Specifies the label to be added to the pull request. In this case, it adds the backport label.
+
+
+- **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
 
 ### Workflow : lint-j2.yml
   To trigger this workflow, you need to create a pull request that targets one of the specified branches (current, crux, equuleus).
