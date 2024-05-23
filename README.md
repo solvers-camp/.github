@@ -115,10 +115,10 @@
      - The actions **ecosystem/action-regex-match@v2** used to perform a regular expression match.
          - **with**: Defines the inputs for the action.
               - text: ${{ github.event.comment.body }}: Specifies the text to match against, which in this case is the body of the GitHub event comment.
-              - regex: '@[Mm][Ee][Rr][Gg][Ii][Ff][Yy][Ii][Oo] backport ': The regular expression pattern to match. It looks for the text @mergifyio backport in a case-insensitive manner.
+              - regex: '@[Mm][Ee][Rr][Gg][Ii][Ff][Yy][Ii][Oo] backport' The regular expression pattern to match. It looks for the text **_@mergifyio backport_** in a case-insensitive manner.
 
      - The actions **ecosystem/action-add-labels@v1** used to add labels to the pull request.
-          - if: ${{ steps.regex-match.outputs.match != '' }}: This condition checks if the previous regex match step was successful. It only runs this step if a match was found.
+          - ${{ steps.regex-match.outputs.match != '' }} This condition checks if the previous regex match step was successful. It only runs this step if a match was found.
               - **with**: Defines the inputs for the action.
                    - labels: **_backport_**: Specifies the label to be added to the pull request. In this case, it adds the backport label.
 
