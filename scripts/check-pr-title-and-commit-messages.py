@@ -13,7 +13,7 @@ commit_regex = title_regex
 def add_pr_comment(pr_url, message):
     comments_url = f"{pr_url}/comments"
     headers = {
-        'Authorization': f"token {os.getenv('GITHUB_TOKEN')}",
+        'Authorization': f"token {os.getenv('GH_TOKEN')}",
         'Accept': 'application/vnd.github.v3+json',
     }
     data = {
