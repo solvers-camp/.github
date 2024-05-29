@@ -28,9 +28,9 @@ def add_pr_comment(pr_url, message):
 
 def check_pr_title(pr_url,title):
     if not re.match(title_regex, title):
+        print("Before add comment")        
         message = f"PR title '{title}' does not match the required format! Valid title example: T99999: make IPsec secure"
         print(message)
-        print("Before add comment")
         add_pr_comment(pr_url, message)  
         print("After add comment")      
         # print("PR title '{}' does not match the required format!".format(title))
@@ -39,9 +39,9 @@ def check_pr_title(pr_url,title):
 
 def check_commit_message(pr_url,title):    
     if not re.match(commit_regex, title):
+        print("Before pr comment")          
         message = f"Commit title '{title}' does not match the required format! Valid title example: T99999: make IPsec secure"
-        print(message)
-        print("Before pr comment")        
+        print(message)      
         add_pr_comment(pr_url, message)      
         print("After pr comment")   
         # print("Commit title '{}' does not match the required format!".format(title))
