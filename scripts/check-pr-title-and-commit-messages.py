@@ -19,14 +19,20 @@ def add_pr_comment(pr_url, message):
     data = {
         'body': message,
     }
+    print ( f"url : {pr_url} message : {message}") 
+
+
     response = requests.post(comments_url, headers=headers, json=data)
+    print ( f"Afer post")     
     response.raise_for_status()
 
 def check_pr_title(pr_url,title):
     if not re.match(title_regex, title):
         message = f"PR title '{title}' does not match the required format! Valid title example: T99999: make IPsec secure"
         print(message)
-        add_pr_comment(pr_url, message)        
+        print("Before add comment")
+        add_pr_comment(pr_url, message)  
+        print("After add comment")      
         # print("PR title '{}' does not match the required format!".format(title))
         # print("Valid title example: T99999: make IPsec secure")
         sys.exit(1)
@@ -35,7 +41,9 @@ def check_commit_message(pr_url,title):
     if not re.match(commit_regex, title):
         message = f"Commit title '{title}' does not match the required format! Valid title example: T99999: make IPsec secure"
         print(message)
-        add_pr_comment(pr_url, message)         
+        print("Before pr comment")        
+        add_pr_comment(pr_url, message)      
+        print("After pr comment")   
         # print("Commit title '{}' does not match the required format!".format(title))
         # print("Valid title example: T99999: make IPsec secure")       
         sys.exit(1)

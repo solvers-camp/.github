@@ -22,6 +22,34 @@ jobs:
         run: pip3 install requests
 
       - name: Check the PR title
+        id: check-title
         timeout-minutes: 2
         run: |
           ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+      #     continue-on-error: true
+
+      # - name: Add comment if PR title is invalid
+      #   if: steps.check-title.outcome == 'failure'
+      #   run: |
+      #     pr_url=${{ github.event.pull_request.url }}
+      #     pr_number=$(echo $pr_url | grep -oE '[^/]+$')
+      #     comment="PR title or commit message does not match the required format! Valid title example: T99999: make IPsec secure."
+      #     gh pr comment $pr_number --body "$comment"
+      #   env:
+      #       # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}            
+
+            
+      # - name: Comment PR
+      #   if: steps.check_title.outcome == 'failure'
+      #   uses: actions/github-script@v5
+      #   with:
+      #         script: |
+      #           const issue_number = context.issue.number;
+      #           const error_message = Error in PR title: ${steps.check_title.outputs.error};
+      #           github.rest.issues.createComment({
+      #             owner: context.repo.owner,
+      #             repo: context.repo.repo,
+      #             issue_number: issue_number,
+      #             body: error_message
+      #           });
