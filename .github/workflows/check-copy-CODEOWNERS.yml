@@ -27,7 +27,7 @@ jobs:
                 await github.repos.getContent({
                   owner: org,
                   repo: repo.name,
-                  path: '.github/CODEOWNERS',
+                  path: 'CODEOWNERS',
                 });
               } catch (error) {
                 if (error.status === 404) {
