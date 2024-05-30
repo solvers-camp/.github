@@ -10,28 +10,28 @@ import requests
 title_regex = r'^(([a-zA-Z\-_.]+:\s)?)T\d+:\s+[^\s]+.*'
 commit_regex = title_regex
 
-def add_pr_comment(pr_url, message):
-    comments_url = f"{pr_url}/comments"
-    headers = {
-        'Authorization': f"token {os.getenv('GH_TOKEN')}",
-        'Accept': 'application/vnd.github.v3+json',
-    }
-    data = {
-        'body': message,
-    }
-    print ( f"url : {pr_url} message : {message}") 
+# def add_pr_comment(pr_url, message):
+#     comments_url = f"{pr_url}/comments"
+#     headers = {
+#         'Authorization': f"token {os.getenv('GH_TOKEN')}",
+#         'Accept': 'application/vnd.github.v3+json',
+#     }
+#     data = {
+#         'body': message,
+#     }
+#     print ( f"url : {pr_url} message : {message}") 
 
 
-    response = requests.post(comments_url, headers=headers, json=data)
-    print ( f"Afer post")     
-    response.raise_for_status()
+#     response = requests.post(comments_url, headers=headers, json=data)
+#     print ( f"Afer post")     
+#     response.raise_for_status()
 
 def check_pr_title(pr_url,title):
     if not re.match(title_regex, title):
         print("Before add comment")        
         message = f"PR title '{title}' does not match the required format! Valid title example: T99999: make IPsec secure"
         print(message)
-        add_pr_comment(pr_url, message)  
+        # add_pr_comment(pr_url, message)  
         print("After add comment")      
         # print("PR title '{}' does not match the required format!".format(title))
         # print("Valid title example: T99999: make IPsec secure")
@@ -42,7 +42,7 @@ def check_commit_message(pr_url,title):
         print("Before pr comment")          
         message = f"Commit title '{title}' does not match the required format! Valid title example: T99999: make IPsec secure"
         print(message)      
-        add_pr_comment(pr_url, message)      
+        # add_pr_comment(pr_url, message)      
         print("After pr comment")   
         # print("Commit title '{}' does not match the required format!".format(title))
         # print("Valid title example: T99999: make IPsec secure")       
