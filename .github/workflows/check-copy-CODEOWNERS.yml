@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Check and copy CODEOWNERS
-        uses: actions/github-script@v3
+        uses: actions/github-script@v2
         with:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
