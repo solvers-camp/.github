@@ -16,6 +16,17 @@ jobs:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
             const org = context.repo.owner;
+            const sourceRepo = '.github';
+
+             // Fetch the content of the CODEOWNERS file from the source repository
+            const { data: sourceContent } = await github.repos.getContent({
+              owner: org,
+              repo: sourceRepo,
+              path: 'CODEOWNERS',
+            });
+
+            // Decode the content from base64
+            const decodedContent = Buffer.from(sourceContent.content, 'base64').toString(); 
 
             const repos = await github.paginate(github.repos.listForOrg, {
               org,
@@ -23,21 +34,23 @@ jobs:
             });
 
             for (const repo of repos) {
-              try {
-                await github.repos.getContent({
-                  owner: org,
-                  repo: repo.name,
-                  path: 'CODEOWNERS',
-                });
-              } catch (error) {
-                if (error.status === 404) {
-                  await github.repos.createOrUpdateFileContents({
+              if (repo.name !== sourceRepo) {
+                try {
+                  await github.repos.getContent({
                     owner: org,
                     repo: repo.name,
-                    path: 'CODEOWNERS',
-                    message: 'Create CODEOWNERS',
-                    content: Buffer.from('* @vijaikannangit', 'utf-8').toString('base64'),
+                    path: '.github/CODEOWNERS',
                   });
+                } catch (error) {
+                  if (error.status === 404) {
+                    await github.repos.createOrUpdateFileContents({
+                      owner: org,
+                      repo: repo.name,
+                      path: '.github/CODEOWNERS',
+                      message: 'Create CODEOWNERS',
+                      content: Buffer.from(decodedContent).toString('base64'),
+                    });
+                  }
                 }
               }
             }
