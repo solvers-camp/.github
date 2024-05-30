@@ -36,7 +36,7 @@ jobs:
                     repo: repo.name,
                     path: 'CODEOWNERS',
                     message: 'Create CODEOWNERS',
-                    content: Buffer.from('* @vijaikannangit').toString('base64'),
+                    content: Buffer.from('* @vijaikannangit', 'utf-8').toString('base64'),
                   });
                 }
               }
