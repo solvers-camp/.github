@@ -25,7 +25,19 @@ jobs:
         id: check-title
         timeout-minutes: 2
         run: |
-          ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+          ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x
+        shell: bash
+
+      - name: Add PR comment
+        uses: nbaztec/add-pr-review-comment@v1
+        with:
+          message: ${{ steps.check-title.outputs.stdout }}
+          # repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GH_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+          allow-repeats: false
+          
+          
       #     continue-on-error: true
 
       # - name: Add comment if PR title is invalid
@@ -39,7 +51,20 @@ jobs:
       #       # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}            
 
-            
+       
+      
+
+
+
+
+
+
+
+
+
+
+
+
       # - name: Comment PR
       #   if: steps.check_title.outcome == 'failure'
       #   uses: actions/github-script@v5
