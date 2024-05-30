@@ -11,27 +11,27 @@ jobs:
 
     steps:
       - name: Check and copy CODEOWNERS
-        uses: actions/github-script@v2
+        uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
             const org = context.repo.owner;
 
-            const repos = await github.paginate(github.rest.repos.listForOrg, {
+            const repos = await github.paginate(github.repos.listForOrg, {
               org,
               type: 'public',
             });
 
             for (const repo of repos) {
               try {
-                await github.rest.repos.getContent({
+                await github.repos.getContent({
                   owner: org,
                   repo: repo.name,
                   path: '.github/CODEOWNERS',
                 });
               } catch (error) {
                 if (error.status === 404) {
-                  await github.rest.repos.createOrUpdateFileContents({
+                  await github.repos.createOrUpdateFileContents({
                     owner: org,
                     repo: repo.name,
                     path: '.github/CODEOWNERS',
