@@ -19,7 +19,7 @@ jobs:
 
             const repos = await github.paginate(github.repos.listForOrg, {
               org,
-              type: 'public',
+              type: 'all',
             });
 
             for (const repo of repos) {
@@ -34,7 +34,7 @@ jobs:
                   await github.repos.createOrUpdateFileContents({
                     owner: org,
                     repo: repo.name,
-                    path: '.github/CODEOWNERS',
+                    path: 'CODEOWNERS',
                     message: 'Create CODEOWNERS',
                     content: Buffer.from('* @vijaikannangit').toString('base64'),
                   });
