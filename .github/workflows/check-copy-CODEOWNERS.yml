@@ -1,0 +1,44 @@
+name: Check and Copy CODEOWNERS
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  copy_codeowners:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check and copy CODEOWNERS
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GH_TOKEN}}
+          script: |
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            const org = context.repo.owner;
+
+            const repos = await octokit.paginate(octokit.rest.repos.listForOrg, {
+              org,
+              type: 'public',
+            });
+
+            for (const repo of repos) {
+              try {
+                await octokit.rest.repos.getContent({
+                  owner: org,
+                  repo: repo.name,
+                  path: '.github/CODEOWNERS',
+                });
+              } catch (error) {
+                if (error.status === 404) {
+                  await octokit.rest.repos.createOrUpdateFileContents({
+                    owner: org,
+                    repo: repo.name,
+                    path: '.github/CODEOWNERS',
+                    message: 'Create CODEOWNERS',
+                    content: Buffer.from('* @vijaikannangit').toString('base64'),
+                  });
+                }
+              }
+            }
