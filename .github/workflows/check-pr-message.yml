@@ -45,10 +45,9 @@
             set +e
             output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
             status=$?
-            echo "::set-output name=error_message::$output"
-            # echo "$output"
+            output_b64=$(echo "$output" | base64 -w 0)
+            echo "::set-output name=error_message_b64::$output_b64"
             exit $status
-
           shell: bash
 
         - name: Add PR comment
@@ -57,7 +56,7 @@
           with:
             # message: ${{ env.error_message }}
             message: |
-              ${{ steps.check_pr_title.outputs.error_message }}
+              ${{ steps.check_pr_title.outputs.error_message_b64 }}
               ❌
             repo-token: ${{ secrets.GH_TOKEN }}
             allow-repeats: false
