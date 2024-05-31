@@ -33,8 +33,6 @@
           timeout-minutes: 2
           run: |
             ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
-            # output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
-            # echo "error_message=$output" >> $GITHUB_ENV
           shell: bash
 
         - name: Echo message test2
@@ -46,6 +44,8 @@
           uses: mshick/add-pr-comment@v2
           with:
             # message: ${{ env.error_message }}
-            message: "Hello"
+            message: |
+              **Check for comment By Vijai Kannan**
+              ❌
             repo-token: ${{ secrets.GH_TOKEN }}
             allow-repeats: false
