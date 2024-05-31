@@ -26,6 +26,9 @@ jobs:
         run: | 
              echo "I am One"
 
+      - name: Give execute permissions to script
+        run: chmod +x ./reusable-actions/scripts/check-pr-title-and-commit-messages.py
+
       - name: Check the PR title
         id: check-title
         timeout-minutes: 2
