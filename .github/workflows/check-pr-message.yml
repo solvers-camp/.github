@@ -52,6 +52,7 @@
           shell: bash
 
         - name: Decode error message
+          if: failure()
           id: decode_error_message
           run: |
             error_message=$(echo "${{ env.error_message_b64 }}" | base64 --decode)
