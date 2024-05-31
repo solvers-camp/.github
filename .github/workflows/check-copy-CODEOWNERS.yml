@@ -13,7 +13,7 @@ jobs:
       - name: Check and copy CODEOWNERS
         uses: actions/github-script@v3
         with:
-          github-token: ${{secrets.GH_TOKEN}}
+          github-token: ${{secrets.TOKEN1}}
           script: |
             const org = context.repo.owner;
             const sourceRepo = '.github';
