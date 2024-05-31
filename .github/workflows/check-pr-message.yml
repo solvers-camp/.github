@@ -32,15 +32,14 @@
         - name: Check the PR title
           timeout-minutes: 2
           run: |
-            # ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
-            output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
-            echo "error_message=$output" >> $GITHUB_ENV
+            ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+            # output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
+            # echo "error_message=$output" >> $GITHUB_ENV
           shell: bash
 
-        - name: Echo message test1
+        - name: Echo message test2
           run: | 
                echo "I am test2"
-
 
         - name: Add PR comment
           if: failure()
