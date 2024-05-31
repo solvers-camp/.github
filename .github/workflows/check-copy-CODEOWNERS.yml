@@ -81,12 +81,17 @@ jobs:
                     });
 
                     // Create a pull request
+                    let targetBranch = default_branch;
+                    if (default_branch === 'sagitta' || default_branch === 'equleuus') {
+                      targetBranch = default_branch;
+                    }
+
                     await github.pulls.create({
                       owner: org,
                       repo: repo.name,
                       title: 'T3456: Add CODEOWNERS file',
                       head: branchName,
-                      base: default_branch,
+                      base: targetBranch,
                     });
                   }
                 }
