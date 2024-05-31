@@ -45,6 +45,7 @@
           if: failure()
           uses: mshick/add-pr-comment@v2
           with:
-            message: ${{ env.error_message }}
+            # message: ${{ env.error_message }}
+            message: "Hello"
             repo-token: ${{ secrets.GH_TOKEN }}
             allow-repeats: false
