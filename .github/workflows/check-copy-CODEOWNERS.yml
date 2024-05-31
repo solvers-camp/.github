@@ -18,7 +18,7 @@ jobs:
             const org = context.repo.owner;
             const sourceRepo = '.github';
 
-             // Fetch the content of the CODEOWNERS file from the source repository
+            // Fetch the content of the CODEOWNERS file from the source repository
             const { data: sourceContent } = await github.repos.getContent({
               owner: org,
               repo: sourceRepo,
@@ -39,16 +39,42 @@ jobs:
                   await github.repos.getContent({
                     owner: org,
                     repo: repo.name,
-                    path: '.github/CODEOWNERS',
+                    path: 'CODEOWNERS',
                   });
                 } catch (error) {
                   if (error.status === 404) {
+                    // Create a new branch
+                    const { data: ref } = await github.git.getRef({
+                      owner: org,
+                      repo: repo.name,
+                      ref: 'heads/master',
+                    });
+
+                    const branchName = 'add-codeowners';
+                    await github.git.createRef({
+                      owner: org,
+                      repo: repo.name,
+                      ref: `refs/heads/${branchName}`,
+                      sha: ref.object.sha,
+                    });
+
+                    // Create CODEOWNERS file in the new branch
                     await github.repos.createOrUpdateFileContents({
                       owner: org,
                       repo: repo.name,
-                      path: '.github/CODEOWNERS',
+                      path: 'CODEOWNERS',
                       message: 'Create CODEOWNERS',
                       content: Buffer.from(decodedContent).toString('base64'),
+                      branch: branchName,
+                    });
+
+                    // Create a pull request
+                    await github.pulls.create({
+                      owner: org,
+                      repo: repo.name,
+                      title: 'Add CODEOWNERS file',
+                      head: branchName,
+                      base: 'master',
                     });
                   }
                 }
