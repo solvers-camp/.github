@@ -34,13 +34,21 @@
           id: check_pr_title
           run: |
             # ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+            # output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
+            # echo "::set-output name=error_message::$output" 
+            # echo "$output"
+            # if [[ $? -ne 0 ]]; then
+            #   echo "::set-output name=error_message::$output"
+            #   exit 1
+            # fi
+            
+            set +e
             output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
-            echo "::set-output name=error_message::$output" 
+            status=$?
+            echo "::set-output name=error_message::$output"
             echo "$output"
-            if [[ $? -ne 0 ]]; then
-              echo "::set-output name=error_message::$output"
-              exit 1
-            fi            
+            exit $status
+
           shell: bash
 
         - name: Echo message test2
