@@ -1,3 +1,4 @@
+"""
 #!/usr/bin/env python3
 import os
 import re
@@ -75,6 +76,7 @@ if __name__ == '__main__':
         # Retrieve every individual commit and check its title
         co = requests.get(c["url"]).json()
         check_commit_message(co["commit"]["message"])
+"""
 
 #!/usr/bin/env python3
 
