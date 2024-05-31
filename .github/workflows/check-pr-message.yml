@@ -29,28 +29,28 @@ jobs:
       - name: Check the PR title
         id: check-title
         timeout-minutes: 2
-        continue-on-error: true
+        # continue-on-error: true
         run: |
           ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x
         shell: bash
 
-      - name: Echo message test2
-        run: | 
-             echo "I am two"
+      # - name: Echo message test2
+      #   run: | 
+      #        echo "I am two"
 
-      - name: Add PR comment
-        uses: nbaztec/add-pr-review-comment@v1
-        with:
-          message: ${{ steps.check-title.outputs.stdout }}
-          # repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token: ${{ secrets.GH_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: false            
+      # - name: Add PR comment
+      #   uses: nbaztec/add-pr-review-comment@v1
+      #   with:
+      #     message: ${{ steps.check-title.outputs.stdout }}
+      #     # repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     repo-token: ${{ secrets.GH_TOKEN }}
+      #     repo-token-user-login: 'github-actions[bot]'
+      #     allow-repeats: false            
           
-      - name: Echo message test3
-        run: | 
-             echo "I am here three"
-             echo ${{ steps.add-pr-review-comment.outputs.message }}
+      # - name: Echo message test3
+      #   run: | 
+      #        echo "I am here three"
+
 
 
              
