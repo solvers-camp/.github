@@ -42,12 +42,13 @@
             #   exit 1
             # fi
 
-            set +e
             output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
             status=$?
             output_b64=$(echo "$output" | base64 -w 0)
             echo "::set-output name=error_message_b64::$output_b64"
-            exit $status
+            if [ $status -ne 0 ]; then
+              echo "::error ::$output"
+            fi
           shell: bash
 
         - name: Decode error message
@@ -63,7 +64,7 @@
           with:
             # message: ${{ env.error_message }}
             message: |
-              ${{ steps.check_pr_title.outputs.error_message_b64 }}
+              ${{ steps.decode_error_message.outputs.error_message }}
               ❌
             repo-token: ${{ secrets.GH_TOKEN }}
             allow-repeats: false
