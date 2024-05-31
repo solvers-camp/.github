@@ -32,7 +32,24 @@ jobs:
             }
 
             // Decode the content from base64
-            const decodedContent = Buffer.from(sourceContent.data.content, 'base64').toString(); 
+            const decodedContent = Buffer.from(sourceContent.data.content, 'base64').toString();
+
+            // Fetch the content of the codeowners-settings.yml file from the source repository
+            let settingsContent;
+            try {
+              settingsContent = await github.repos.getContent({
+                owner: org,
+                repo: sourceRepo,
+                path: '.github/codeowners-settings.yml',
+              });
+            } catch (error) {
+              console.log(`Cannot find codeowners-settings.yml in ${sourceRepo}`);
+              return;
+            }
+
+            // Decode the content from base64 and parse the YAML
+            const decodedSettingsContent = Buffer.from(settingsContent.data.content, 'base64').toString(); 
+            const settings = yaml.safeLoad(decodedSettingsContent); 
 
             const repos = await github.paginate(github.repos.listForOrg, {
               org,
@@ -40,7 +57,7 @@ jobs:
             });
 
             for (const repo of repos) {
-              if (repo.name !== sourceRepo) {
+              if (repo.name !== sourceRepo && settings.include.includes(repo.name) && !settings.exclude.includes(repo.name)) {
                 try {
                   await github.repos.getContent({
                     owner: org,
@@ -62,7 +79,7 @@ jobs:
                       ref: `heads/${default_branch}`,
                     });
 
-                    const branchName = 'add-codeowners-branch3';
+                    const branchName = 'add-codeowners-branch4';
                     await github.git.createRef({
                       owner: org,
                       repo: repo.name,
@@ -80,18 +97,13 @@ jobs:
                       branch: branchName,
                     });
 
-                    // Create a pull request
-                    let targetBranch = default_branch;
-                    if (default_branch === 'sagitta' || default_branch === 'equleuus') {
-                      targetBranch = default_branch;
-                    }
-
+                     // Create a pull request
                     await github.pulls.create({
                       owner: org,
                       repo: repo.name,
-                      title: 'T3456: Add CODEOWNERS file',
+                      title: 'T8888: Add CODEOWNERS file',
                       head: branchName,
-                      base: targetBranch,
+                      base: default_branch,
                     });
                   }
                 }
