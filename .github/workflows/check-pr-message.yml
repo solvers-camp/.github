@@ -15,11 +15,16 @@ jobs:
       - name: Checkout reusable actions repo
         uses: actions/checkout@v3
         with:
-          repository: vyos/.github
+          # repository: vyos/.github
+          repository: solvers-camp/.github
           path: reusable-actions
 
       - name: Install the requests library
         run: pip3 install requests
+
+      - name: Echo message test1
+        run: | 
+             echo "I am One"
 
       - name: Check the PR title
         id: check-title
@@ -28,6 +33,10 @@ jobs:
           ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x
         shell: bash
 
+      - name: Echo message test2
+        run: | 
+             echo "I am two"
+
       - name: Add PR comment
         uses: nbaztec/add-pr-review-comment@v1
         with:
@@ -35,9 +44,15 @@ jobs:
           # repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token: ${{ secrets.GH_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: false
+          allow-repeats: false            
           
-          
+      - name: Echo message
+        run: | 
+             echo "I am here"
+             echo ${{ steps.add-pr-review-comment.outputs.message }}
+
+
+             
       #     continue-on-error: true
 
       # - name: Add comment if PR title is invalid
@@ -50,20 +65,6 @@ jobs:
       #   env:
       #       # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}            
-
-       
-      
-
-
-
-
-
-
-
-
-
-
-
 
       # - name: Comment PR
       #   if: steps.check_title.outcome == 'failure'
@@ -78,3 +79,4 @@ jobs:
       #             issue_number: issue_number,
       #             body: error_message
       #           });
+             
