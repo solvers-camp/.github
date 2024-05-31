@@ -1,6 +1,4 @@
-include:
-  - python-composite-action
-  - python-reusable-actions
-exclude:
-  - sync-destination
-  - sync-source
+{
+  "include": ["python-composite-action", "python-reusable-actions"],
+  "exclude": ["sync-destination", "sync-source"]
+}

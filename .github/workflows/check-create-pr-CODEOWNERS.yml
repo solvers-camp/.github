@@ -49,7 +49,7 @@ jobs:
 
             // Decode the content from base64 and parse the YAML
             const decodedSettingsContent = Buffer.from(settingsContent.data.content, 'base64').toString(); 
-            const settings = yaml.safeLoad(decodedSettingsContent); 
+            const settings = JSON.parse(decodedSettingsContent); 
 
             const repos = await github.paginate(github.repos.listForOrg, {
               org,
