@@ -15,7 +15,7 @@ jobs:
         with:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
-            const org = 'solvers-camp'; // replace with your organization name
+            const org = context.repo.owner;
             const sourceRepo = '.github';
 
             // Fetch the content of the CODEOWNERS file from the source repository
@@ -62,7 +62,7 @@ jobs:
                       ref: `heads/${default_branch}`,
                     });
 
-                    const branchName = 'add-codeowners-branch';
+                    const branchName = 'add-codeowners-branch1';
                     await github.git.createRef({
                       owner: org,
                       repo: repo.name,
