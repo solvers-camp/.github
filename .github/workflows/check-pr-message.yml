@@ -52,6 +52,7 @@
             # fi
 
             output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1 || true)
+            echo "$output"
             output_b64=$(echo "$output" | base64 -w 0)
             echo "error_message_b64=$output_b64" >> $GITHUB_ENV
             if [ -n "$output" ]; then
