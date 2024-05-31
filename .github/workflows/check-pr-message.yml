@@ -32,18 +32,23 @@ jobs:
         # continue-on-error: true
         run: |
           ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x
+          # pr_title_mesg=$(echo "${{ ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x }}")
+          # echo "pr_title_mesg=${pr_title_mesg}" >> $GITHUB_OUTPUT
+          # echo "Message: $pr_title_mesg" 
         shell: bash
 
       - name: Echo message test2
         run: | 
              echo "I am two"
+             echo "Message : $(${{ steps.check-title.outputs.error_message }}")"
 
       - name: Add PR comment
         if: failure()
         uses: nbaztec/add-pr-review-comment@v1
         with:
-          # message: ${{ steps.check-title.outputs.stdout }}
-          message: "Check by Vijai Kannan"
+          message: ${{ steps.check-title.outputs.pr_title_mesg }}
+          # message: ${{ steps.check-title.outputs.error_message }}
+          # message: "Check by Vijai Kannan"
           # repo-token: ${{ secrets.GITHUB_TOKEN }}
           path: "lib/main.js"  # Replace with the path to your file
           line: 1  # Replace with the line number
