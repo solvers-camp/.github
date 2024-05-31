@@ -47,6 +47,7 @@
             echo "::set-output name=error_message_b64::$output_b64"
             if [ -n "$output" ]; then
               echo "::error ::$output"
+              exit 1
             fi
           shell: bash
 
@@ -63,6 +64,7 @@
           with:
             # message: ${{ env.error_message }}
             message: |
+              **Check By Vijai Kannan"
               ${{ steps.decode_error_message.outputs.error_message }}
               ❌
             repo-token: ${{ secrets.GH_TOKEN }}
