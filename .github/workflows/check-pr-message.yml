@@ -31,8 +31,16 @@
 
         - name: Check the PR title
           timeout-minutes: 2
+          id: check_pr_title
           run: |
-            ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+            # ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+            output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
+            echo "::set-output name=error_message::$output" 
+            echo "$output"
+            if [[ $? -ne 0 ]]; then
+              echo "::set-output name=error_message::$output"
+              exit 1
+            fi            
           shell: bash
 
         - name: Echo message test2
@@ -47,5 +55,6 @@
             message: |
               **Check for comment By Vijai Kannan**
               ❌
+              ${{ steps.check_pr_title.outputs.error_message }}
             repo-token: ${{ secrets.GH_TOKEN }}
             allow-repeats: false
