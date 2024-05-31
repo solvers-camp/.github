@@ -22,7 +22,7 @@ jobs:
       - name: Install the requests library
         run: pip3 install requests
 
-      - name: Echo message
+      - name: Echo message test1
         run: | 
              echo "I am One"
 
@@ -33,7 +33,7 @@ jobs:
           ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x
         shell: bash
 
-      - name: Echo message
+      - name: Echo message test2
         run: | 
              echo "I am two"
 
