@@ -38,39 +38,40 @@ jobs:
         run: | 
              echo "I am two"
 
-      # - name: Add PR comment
+      - name: Add PR comment
+        if: failure()
+        uses: nbaztec/add-pr-review-comment@v1
+        with:
+          # message: ${{ steps.check-title.outputs.stdout }}
+          message: "Check by Vijai Kannan"
+          # repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GH_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+          allow-repeats: false            
+
+      # - name: Add PR comment 1
       #   if: failure()
       #   uses: nbaztec/add-pr-review-comment@v1
       #   with:
-      #     message: ${{ steps.check-title.outputs.stdout }}
-      #     # repo-token: ${{ secrets.GITHUB_TOKEN }}
+      #     message: "something was deleted"
+      #     path: "lib/main.js"
+      #     line: 55
+      #     side: "RIGHT"
       #     repo-token: ${{ secrets.GH_TOKEN }}
       #     repo-token-user-login: 'github-actions[bot]'
-      #     allow-repeats: false            
+      #     allow-repeats: false
 
-      - name: Add PR comment 1
-        if: failure()
-        uses: nbaztec/add-pr-review-comment@v1
-        with:
-          message: "something was deleted"
-          path: "lib/main.js"
-          line: 55
-          side: "RIGHT"
-          repo-token: ${{ secrets.GH_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: false
-
-      - name: Add PR comment 2
-        if: failure()
-        uses: nbaztec/add-pr-review-comment@v1
-        with:
-          message: "something was added"
-          path: "lib/main.js"
-          line: 67
-          side: "LEFT"
-          repo-token: ${{ secrets.GH_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: false
+      # - name: Add PR comment 2
+      #   if: failure()
+      #   uses: nbaztec/add-pr-review-comment@v1
+      #   with:
+      #     message: "something was added"
+      #     path: "lib/main.js"
+      #     line: 67
+      #     side: "LEFT"
+      #     repo-token: ${{ secrets.GH_TOKEN }}
+      #     repo-token-user-login: 'github-actions[bot]'
+      #     allow-repeats: false
 
       - name: Echo message test3
         run: | 
