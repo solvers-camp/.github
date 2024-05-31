@@ -41,19 +41,15 @@
             #   echo "::set-output name=error_message::$output"
             #   exit 1
             # fi
-            
+
             set +e
             output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
             status=$?
             echo "::set-output name=error_message::$output"
-            echo "$output"
+            # echo "$output"
             exit $status
 
           shell: bash
-
-        - name: Echo message test2
-          run: | 
-               echo "I am test2"
 
         - name: Add PR comment
           if: failure()
@@ -61,8 +57,7 @@
           with:
             # message: ${{ env.error_message }}
             message: |
-              **Check for comment By Vijai Kannan**
-              ❌
               ${{ steps.check_pr_title.outputs.error_message }}
+              ❌
             repo-token: ${{ secrets.GH_TOKEN }}
             allow-repeats: false
