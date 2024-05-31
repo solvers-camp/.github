@@ -35,9 +35,15 @@ jobs:
           # repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token: ${{ secrets.GH_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
-          allow-repeats: false
+          allow-repeats: false            
           
-          
+      - name: Echo message
+        run: | 
+             echo "I am here"
+             echo ${{ steps.add-pr-review-comment.outputs.message }}
+
+
+             
       #     continue-on-error: true
 
       # - name: Add comment if PR title is invalid
@@ -50,20 +56,6 @@ jobs:
       #   env:
       #       # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}            
-
-       
-      
-
-
-
-
-
-
-
-
-
-
-
 
       # - name: Comment PR
       #   if: steps.check_title.outcome == 'failure'
@@ -78,3 +70,4 @@ jobs:
       #             issue_number: issue_number,
       #             body: error_message
       #           });
+             
