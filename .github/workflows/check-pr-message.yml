@@ -21,12 +21,20 @@ jobs:
       - name: Install the requests library
         run: pip3 install requests
 
+      - name: Echo message
+        run: | 
+             echo "I am One"
+
       - name: Check the PR title
         id: check-title
         timeout-minutes: 2
         run: |
           ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x
         shell: bash
+
+      - name: Echo message
+        run: | 
+             echo "I am two"
 
       - name: Add PR comment
         uses: nbaztec/add-pr-review-comment@v1
