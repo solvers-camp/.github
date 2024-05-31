@@ -62,7 +62,7 @@ jobs:
                       ref: `heads/${default_branch}`,
                     });
 
-                    const branchName = 'add-codeowners';
+                    const branchName = 'add-codeowners-branch';
                     await github.git.createRef({
                       owner: org,
                       repo: repo.name,
