@@ -1,4 +1,4 @@
-name: Check and Copy CODEOWNERS
+name: Check and Create PR CODEOWNERS
 
 on:
   schedule:
@@ -62,7 +62,7 @@ jobs:
                       ref: `heads/${default_branch}`,
                     });
 
-                    const branchName = 'add-codeowners-branch2';
+                    const branchName = 'add-codeowners-branch3';
                     await github.git.createRef({
                       owner: org,
                       repo: repo.name,
