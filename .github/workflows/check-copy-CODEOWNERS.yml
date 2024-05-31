@@ -1,0 +1,56 @@
+name: Check and Copy CODEOWNERS
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  copy_codeowners:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check and copy CODEOWNERS
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GH_TOKEN}}
+          script: |
+            const org = context.repo.owner;
+            const sourceRepo = '.github';
+
+             // Fetch the content of the CODEOWNERS file from the source repository
+            const { data: sourceContent } = await github.repos.getContent({
+              owner: org,
+              repo: sourceRepo,
+              path: 'CODEOWNERS',
+            });
+
+            // Decode the content from base64
+            const decodedContent = Buffer.from(sourceContent.content, 'base64').toString(); 
+
+            const repos = await github.paginate(github.repos.listForOrg, {
+              org,
+              type: 'all',
+            });
+
+            for (const repo of repos) {
+              if (repo.name !== sourceRepo) {
+                try {
+                  await github.repos.getContent({
+                    owner: org,
+                    repo: repo.name,
+                    path: '.github/CODEOWNERS',
+                  });
+                } catch (error) {
+                  if (error.status === 404) {
+                    await github.repos.createOrUpdateFileContents({
+                      owner: org,
+                      repo: repo.name,
+                      path: '.github/CODEOWNERS',
+                      message: 'Create CODEOWNERS',
+                      content: Buffer.from(decodedContent).toString('base64'),
+                    });
+                  }
+                }
+              }
+            }
