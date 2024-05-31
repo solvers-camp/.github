@@ -42,11 +42,10 @@
             #   exit 1
             # fi
 
-            output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
-            status=$?
+            output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1 || true)
             output_b64=$(echo "$output" | base64 -w 0)
             echo "::set-output name=error_message_b64::$output_b64"
-            if [ $status -ne 0 ]; then
+            if [ -n "$output" ]; then
               echo "::error ::$output"
             fi
           shell: bash
