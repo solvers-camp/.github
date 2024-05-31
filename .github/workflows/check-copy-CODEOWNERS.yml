@@ -19,14 +19,20 @@ jobs:
             const sourceRepo = '.github';
 
             // Fetch the content of the CODEOWNERS file from the source repository
-            const { data: sourceContent } = await github.repos.getContent({
-              owner: org,
-              repo: sourceRepo,
-              path: '.github/CODEOWNERS',
-            });
+            let sourceContent;
+            try {
+              sourceContent = await github.repos.getContent({
+                owner: org,
+                repo: sourceRepo,
+                path: 'CODEOWNERS',
+              });
+            } catch (error) {
+              console.log(`Cannot find CODEOWNERS in ${sourceRepo}`);
+              return;
+            }
 
             // Decode the content from base64
-            const decodedContent = Buffer.from(sourceContent.content, 'base64').toString(); 
+            const decodedContent = Buffer.from(sourceContent.data.content, 'base64').toString(); 
 
             const repos = await github.paginate(github.repos.listForOrg, {
               org,
@@ -39,15 +45,21 @@ jobs:
                   await github.repos.getContent({
                     owner: org,
                     repo: repo.name,
-                    path: '.github/CODEOWNERS',
+                    path: 'CODEOWNERS',
                   });
                 } catch (error) {
                   if (error.status === 404) {
+                    // Get default branch
+                    const { data: { default_branch } } = await github.repos.get({
+                      owner: org,
+                      repo: repo.name,
+                    });
+
                     // Create a new branch
                     const { data: ref } = await github.git.getRef({
                       owner: org,
                       repo: repo.name,
-                      ref: 'heads/master',
+                      ref: `heads/${default_branch}`,
                     });
 
                     const branchName = 'add-codeowners';
@@ -62,8 +74,8 @@ jobs:
                     await github.repos.createOrUpdateFileContents({
                       owner: org,
                       repo: repo.name,
-                      path: '.github/CODEOWNERS',
-                      message: 'Create CODEOWNERS',
+                      path: 'CODEOWNERS',
+                      message: 'T3456: Create CODEOWNERS',
                       content: Buffer.from(decodedContent).toString('base64'),
                       branch: branchName,
                     });
@@ -72,9 +84,9 @@ jobs:
                     await github.pulls.create({
                       owner: org,
                       repo: repo.name,
-                      title: 'Add CODEOWNERS file',
+                      title: 'T3456: Add CODEOWNERS file',
                       head: branchName,
-                      base: 'master',
+                      base: default_branch,
                     });
                   }
                 }
