@@ -1,116 +1,35 @@
 ---
-name: Check pull request message format
-
-on:
-  workflow_call:
-
-jobs:
-  check-pr-title:
-    name: Check pull request title
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        timeout-minutes: 2
+  name: Check pull request message format
   
-      - name: Checkout reusable actions repo
-        uses: actions/checkout@v3
-        with:
-          # repository: vyos/.github
-          repository: solvers-camp/.github
-          path: reusable-actions
+  on:
+    workflow_call:
+  
+  jobs:
+    check-pr-title:
+      name: Check pull request title
+      runs-on: ubuntu-latest
+      permissions:
+        pull-requests: write
+        contents: read
+      steps:
+        - uses: actions/checkout@v3
+          timeout-minutes: 2
+    
+        - name: Checkout reusable actions repo
+          uses: actions/checkout@v3
+          with:
+            # repository: vyos/.github
+            repository: solvers-camp/.github
+            path: reusable-actions
+  
+        - name: Install the requests library
+          run: pip3 install requests
+  
+        - name: Echo message test1
+          run: | 
+               echo "I am test1"
 
-      - name: Install the requests library
-        run: pip3 install requests
-
-      - name: Echo message test1
-        run: | 
-             echo "I am One"
-
-      - name: Check the PR title
-        id: check-title
-        timeout-minutes: 2
-        # continue-on-error: true
-        run: |
-          ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x
-          # pr_title_mesg=$(echo "${{ ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'x }}")
-          # echo "pr_title_mesg=${pr_title_mesg}" >> $GITHUB_OUTPUT
-          # echo "Message: $pr_title_mesg" 
-        shell: bash
-
-      - name: Echo message test2
-        run: | 
-             echo "I am two"
-             echo "Message : $(${{ steps.check-title.outputs.error_message }}")"
-
-      - name: Echo message test3
-        run: | 
-              echo "I am here three"
-     
-      # - name: Add PR comment
-      #   if: failure()
-      #   uses: nbaztec/add-pr-review-comment@v1
-      #   with:
-      #     message: ${{ steps.check-title.outputs.pr_title_mesg }}
-      #     # message: ${{ steps.check-title.outputs.error_message }}
-      #     # message: "Check by Vijai Kannan"
-      #     # repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     path: "lib/main.js"  # Replace with the path to your file
-      #     line: 1  # Replace with the line number
-      #     side: "RIGHT"  # Or "LEFT", depending on where you want to add the comment          
-      #     repo-token: ${{ secrets.GH_TOKEN }}
-      #     repo-token-user-login: 'github-actions[bot]'
-      #     allow-repeats: false            
-
-      # - name: Add PR comment 1
-      #   if: failure()
-      #   uses: nbaztec/add-pr-review-comment@v1
-      #   with:
-      #     message: "something was deleted"
-      #     path: "lib/main.js"
-      #     line: 55
-      #     side: "RIGHT"
-      #     repo-token: ${{ secrets.GH_TOKEN }}
-      #     repo-token-user-login: 'github-actions[bot]'
-      #     allow-repeats: false
-
-      # - name: Add PR comment 2
-      #   if: failure()
-      #   uses: nbaztec/add-pr-review-comment@v1
-      #   with:
-      #     message: "something was added"
-      #     path: "lib/main.js"
-      #     line: 67
-      #     side: "LEFT"
-      #     repo-token: ${{ secrets.GH_TOKEN }}
-      #     repo-token-user-login: 'github-actions[bot]'
-      #     allow-repeats: false
-
-
-             
-      #     continue-on-error: true
-
-      # - name: Add comment if PR title is invalid
-      #   if: steps.check-title.outcome == 'failure'
-      #   run: |
-      #     pr_url=${{ github.event.pull_request.url }}
-      #     pr_number=$(echo $pr_url | grep -oE '[^/]+$')
-      #     comment="PR title or commit message does not match the required format! Valid title example: T99999: make IPsec secure."
-      #     gh pr comment $pr_number --body "$comment"
-      #   env:
-      #       # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}            
-
-      # - name: Comment PR
-      #   if: steps.check_title.outcome == 'failure'
-      #   uses: actions/github-script@v5
-      #   with:
-      #         script: |
-      #           const issue_number = context.issue.number;
-      #           const error_message = Error in PR title: ${steps.check_title.outputs.error};
-      #           github.rest.issues.createComment({
-      #             owner: context.repo.owner,
-      #             repo: context.repo.repo,
-      #             issue_number: issue_number,
-      #             body: error_message
-      #           });
-             
+        - name: Check the PR title
+          timeout-minutes: 2
+          run: |
+            ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
