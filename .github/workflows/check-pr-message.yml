@@ -45,6 +45,9 @@ jobs:
           # message: ${{ steps.check-title.outputs.stdout }}
           message: "Check by Vijai Kannan"
           # repo-token: ${{ secrets.GITHUB_TOKEN }}
+          path: "lib/main.js"  # Replace with the path to your file
+          line: 1  # Replace with the line number
+          side: "RIGHT"  # Or "LEFT", depending on where you want to add the comment          
           repo-token: ${{ secrets.GH_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
           allow-repeats: false            
