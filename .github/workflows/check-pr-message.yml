@@ -59,15 +59,19 @@
               echo "::error ::$output"
               exit 1
             fi
-
+            echo "error_message_b64=$output_b64"
+            echo "error_message_b64 after setting env var: ${{ env.error_message_b64 }}"
+        
           shell: bash
 
         - name: Decode error message
           # if: failure()
           id: decode_error_message
           run: |
+            echo "error_message_b64 before decoding: ${{ env.error_message_b64 }}"
             error_message=$(echo "${{ env.error_message_b64 }}" | base64 --decode)
-            echo "error_message=$error_message" >> $GITHUB_ENV            
+            echo "error_message=$error_message" >> $GITHUB_ENV
+            echo "error_message after decoding: $error_message  
           shell: bash
 
         - name: Add PR comment
