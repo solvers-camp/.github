@@ -32,10 +32,10 @@
         - name: Check the PR title
           timeout-minutes: 2
           id: check_pr_title
-          continue-on-error: true
+          # continue-on-error: true
           run: |
             # ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
-            output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1 || true)
+            output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
             echo "$output"
             if [ -n "$output" ]; then
               echo "::error ::$output"
@@ -43,16 +43,6 @@
               exit 1
             fi
           shell: bash
-
-        # - name: Decode error message
-        #   # if: failure()
-        #   id: decode_error_message
-        #   run: |
-        #     # echo "error_message_b64 before decoding: ${{ env.error_message_b64 }}"
-        #     error_message=$(echo "${{ env.error_message_b64 }}" | base64 --decode)
-        #     echo "error_message=$error_message" >> $GITHUB_ENV
-        #     # echo "error_message after decoding: $error_message  
-        #   shell: bash
 
         - name: Add PR comment
           if: failure()
