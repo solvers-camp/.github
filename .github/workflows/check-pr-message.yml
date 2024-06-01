@@ -81,6 +81,8 @@
             # message: ${{ env.error_message }}
             message: |
               **Check By Vijai Kannan"
+              **PR title 'Update README.md' does not match the required format!
+              **Valid title example: T99999: make IPsec secure
               # ${{ env.error_message }}
               ${{ steps.check_pr_title.outputs.error_message }}
               ❌
