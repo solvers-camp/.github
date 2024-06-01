@@ -39,9 +39,10 @@
             output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1 || true)
             echo "$output"
             if [ -n "$output" ]; then
-              echo "::error ::$output"
+              echo "::error_vij ::$output"
               # Set an output for the step
-              echo " ::set-output name=error_message::$output"
+              # echo " ::set-output name=error_message::$output"
+              echo "error_message=$output" >> $GITHUB_ENV
               exit 1
             fi
           shell: bash
