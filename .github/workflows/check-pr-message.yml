@@ -55,12 +55,13 @@
             echo "$output"
             output_b64=$(echo "$output" | base64 -w 0)
             echo "error_message_b64=$output_b64" >> $GITHUB_ENV
+            echo "error_message_b64=$output_b64"
+            echo "error_message_b64 after setting env var: ${{ env.error_message_b64 }}"            
             if [ -n "$output" ]; then
               echo "::error ::$output"
               exit 1
             fi
-            echo "error_message_b64=$output_b64"
-            echo "error_message_b64 after setting env var: ${{ env.error_message_b64 }}"
+
         
           shell: bash
 
