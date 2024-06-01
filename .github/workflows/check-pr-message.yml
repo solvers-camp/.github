@@ -59,10 +59,9 @@
             echo "error_message_b64 after setting env var: ${{ env.error_message_b64 }}"            
             if [ -n "$output" ]; then
               echo "::error ::$output"
+              echo "::set-output name=error_message::$output"
               exit 1
-            fi
-
-        
+            fi        
           shell: bash
 
         - name: Decode error message
@@ -82,7 +81,8 @@
             # message: ${{ env.error_message }}
             message: |
               **Check By Vijai Kannan"
-              ${{ env.error_message }}
+              # ${{ env.error_message }}
+              ${{ steps.check_pr_title.outputs.error_message }}
               ❌
             repo-token: ${{ secrets.GH_TOKEN }}
             allow-repeats: false
