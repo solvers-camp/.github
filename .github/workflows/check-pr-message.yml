@@ -25,27 +25,14 @@
         - name: Install the requests library
           run: pip3 install requests
   
-        - name: Echo message test1
-          run: | 
-               echo "I am test1"
-
         - name: Check the PR title
           timeout-minutes: 2
           id: check_pr_title
-          # continue-on-error: true
           run: |
-            # ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
-            # output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)            
             output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1 || true)
             echo "$output"
             if [ -n "$output" ]; then
-              # echo "::error_vij ::$output"
-              # Set an output for the step
-              # echo " ::set-output name=error_message::$output"
-              # echo "error_message=$output" >> $GITHUB_ENV
-              # Replace newline characters with spaces and set the environment variable
-              # echo "error_message=${output//$'\n'/ }" >> $GITHUB_ENV     
-              echo "error_message=${output//$'\n'/ .}" >> $GITHUB_ENV         
+              echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV         
               exit 1
             fi
           shell: bash
