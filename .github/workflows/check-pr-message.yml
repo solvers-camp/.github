@@ -34,7 +34,9 @@
           id: check_pr_title
           # continue-on-error: true
           run: |
-            ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+            # ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+            output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
+            echo "$output"            
             # output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
             # echo "$output"
             # if [ -n "$output" ]; then
