@@ -34,14 +34,14 @@
           id: check_pr_title
           # continue-on-error: true
           run: |
-            # ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
-            output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
-            echo "$output"
-            if [ -n "$output" ]; then
-              echo "::error ::$output"
-              echo "error_message=$output" >> $GITHUB_ENV
-              exit 1
-            fi
+            ./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}'
+            # output=$(./reusable-actions/scripts/check-pr-title-and-commit-messages.py '${{ github.event.pull_request.url }}' 2>&1)
+            # echo "$output"
+            # if [ -n "$output" ]; then
+            #   echo "::error ::$output"
+            #   echo "error_message=$output" >> $GITHUB_ENV
+            #   exit 1
+            # fi
           shell: bash
 
         - name: Add PR comment
@@ -50,7 +50,7 @@
           with:
             message: |
               **Check By Vijai Kannan"
-              ${{ env.error_message }}
+              # ${{ env.error_message }}
               # ${{ steps.check_pr_title.outputs.error_message }}
               ❌
             repo-token: ${{ secrets.GH_TOKEN }}
