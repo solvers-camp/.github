@@ -72,6 +72,20 @@ jobs:
                       repo: repo.name,
                     });
 
+                    const branchName = `codeowners-feature-${repo.name}`;
+                    
+                    // Check if a pull request already exists
+                    const existingPulls = await github.pulls.list({
+                      owner: org,
+                      repo: repo.name,
+                      head: `${org}:${branchName}`
+                    });
+
+                    if (existingPulls.data.length > 0) {
+                      console.log(`Pull request already exists for repository ${repo.name}`);
+                      continue;
+                    }
+
                     // Create a new branch
                     const { data: ref } = await github.git.getRef({
                       owner: org,
@@ -79,7 +93,6 @@ jobs:
                       ref: `heads/${default_branch}`,
                     });
 
-                    const branchName = `codeowners-feature-${repo.name}`;
                     await github.git.createRef({
                       owner: org,
                       repo: repo.name,
@@ -96,18 +109,6 @@ jobs:
                       content: Buffer.from(decodedContent).toString('base64'),
                       branch: branchName,
                     });
-
-                    // Check if a pull request already exists
-                    const existingPulls = await github.pulls.list({
-                      owner: org,
-                      repo: repo.name,
-                      head: `${org}:${branchName}`
-                    });
-
-                    if (existingPulls.data.length > 0) {
-                      console.log(`Pull request already exists for repository ${repo.name}`);
-                      continue;
-                    }
 
                      // Create a pull request
                     await github.pulls.create({
