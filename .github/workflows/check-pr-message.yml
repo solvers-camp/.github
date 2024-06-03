@@ -50,7 +50,8 @@
           uses: mshick/add-pr-comment@v2
           with:
             message: |
-              ${{ env.error_message }}
+              ${{ join('\n', env.error_message.split('.')) }}
+              # ${{ env.error_message }}
               ❌
             repo-token: ${{ secrets.GH_TOKEN }}
             allow-repeats: false
