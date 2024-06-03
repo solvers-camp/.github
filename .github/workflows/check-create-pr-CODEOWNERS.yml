@@ -79,7 +79,7 @@ jobs:
                       ref: `heads/${default_branch}`,
                     });
 
-                    const branchName = `add-codeowners-branch-${Date.now()}`;
+                    const branchName = `codeowners-feature-${repo.name}`;
                     await github.git.createRef({
                       owner: org,
                       repo: repo.name,
@@ -113,7 +113,7 @@ jobs:
                     await github.pulls.create({
                       owner: org,
                       repo: repo.name,
-                      title: `Add CODEOWNERS file to ${repo.name} - ${new Date().toLocaleString()}`,
+                      title: `Add CODEOWNERS file to ${repo.name}`,
                       head: branchName,
                       base: default_branch,
                     });
