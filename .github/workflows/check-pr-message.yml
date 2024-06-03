@@ -37,6 +37,20 @@
             fi
           shell: bash
 
+        - name: Format error message
+          run: |
+            echo "error_message=${{ env.error_message//.$/$'\n' }}" >> $GITHUB_ENV
+          shell: bash
+        
+        - name: Add PR comment
+          if: failure()
+          uses: mshick/add-pr-comment@v2
+          with:
+            message: |
+              ${{ env.error_message }}
+              ❌
+            repo-token: ${{ secrets.GH_TOKEN }}
+            allow-repeats: false          
         - name: Add PR comment
           if: failure()
           uses: mshick/add-pr-comment@v2
