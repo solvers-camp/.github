@@ -38,10 +38,13 @@
           shell: bash
 
         - name: Format error message
+          if: failure()
           run: |
-            echo "error_message=${{ env.error_message//.$/$'\n' }}" >> $GITHUB_ENV
+            error_message="${{ env.error_message }}"
+            error_message="${error_message//./$'\n'}"
+            echo "error_message=$error_message" >> $GITHUB_ENV
           shell: bash
-               
+
         - name: Add PR comment
           if: failure()
           uses: mshick/add-pr-comment@v2
