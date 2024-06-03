@@ -41,7 +41,7 @@
           if: failure()
           run: |
             error_message="${{ env.error_message }}"
-            error_message="${error_message//./$'\n'}"
+            error_message=$(printf '%s\n' "${error_message//./ }")
             echo "error_message=$error_message" >> $GITHUB_ENV
           shell: bash
 
