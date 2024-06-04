@@ -40,11 +40,10 @@
           shell: bash
 
         - name: Add PR comment
-          if: failure()
+          # if: failure()
           uses: mshick/add-pr-comment@v2
           with:
             message: |
               ❌
               ${{ env.error_message }}
-
             allow-repeats: false
