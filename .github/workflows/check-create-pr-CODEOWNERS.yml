@@ -77,8 +77,14 @@ jobs:
                     });
 
                     if (existingPulls.data.length > 0) {
-                      console.log(`Pull request already exists for repository ${repo.name}`);
-                      continue;
+                      const lastPull = existingPulls.data[0];
+                      if (lastPull.state === 'open') {
+                        console.log(`Open pull request already exists for repository ${repo.name}`);
+                        continue;
+                      } else if (lastPull.merged_at === null) {
+                        console.log(`Closed pull request exists for repository ${repo.name} but it was not merged`);
+                        continue;
+                      }
                     }
 
                     // Get default branch
