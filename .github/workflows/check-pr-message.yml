@@ -44,6 +44,7 @@
           uses: mshick/add-pr-comment@v2
           with:
             message: |
-              ${{ env.error_message }}
               ❌
+              ${{ env.error_message }}
+
             allow-repeats: false
