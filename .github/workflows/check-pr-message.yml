@@ -34,6 +34,8 @@
               echo "$output"
               echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV         
               exit 1
+            else
+              echo "error_message=" >> $GITHUB_ENV
             fi
           shell: bash
 
