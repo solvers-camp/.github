@@ -81,7 +81,9 @@ jobs:
                       if (lastPull.state === 'open') {
                         console.log(`Open pull request already exists for repository ${repo.name}`);
                         continue;
-                      } else if (lastPull.merged_at === null) {
+                      } else if (lastPull.state === 'closed' && lastPull.merged_at !== null) {
+                        console.log(`Last pull request for repository ${repo.name} was merged and closed`);
+                      } else {
                         console.log(`Closed pull request exists for repository ${repo.name} but it was not merged`);
                         continue;
                       }
