@@ -10,11 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: solvers-camp/.github
+          token: ${{ secrets.TOKEN1 }}
+
       - name: Check and copy CODEOWNERS
         uses: actions/github-script@v3
         with:
           github-token: ${{secrets.TOKEN1}}
           script: |
+            const fs = require('fs');
             const org = context.repo.owner;
             const sourceRepo = '.github';
 
@@ -25,12 +33,8 @@ jobs:
              */
             async function fetchContent(path) {
               try {
-                const content = await github.repos.getContent({
-                  owner: org,
-                  repo: sourceRepo,
-                  path: path,
-                });
-                return Buffer.from(content.data.content, 'base64').toString();
+                const content = fs.readFileSync(path, 'utf8');
+                return content;
               } catch (error) {
                 console.log(`Cannot find ${path} in ${sourceRepo}`);
                 return null;
