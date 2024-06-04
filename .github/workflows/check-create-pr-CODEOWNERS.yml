@@ -65,7 +65,22 @@ jobs:
                     path: 'CODEOWNERS',
                   });
                 } catch (error) {
-                  if (error.status === 404) {
+                  if (error.message.includes('Not Found')) {
+
+                    const branchName = `codeowners-feature-${repo.name}`;
+                    
+                    // Check if a pull request already exists
+                    const existingPulls = await github.pulls.list({
+                      owner: org,
+                      repo: repo.name,
+                      head: `${org}:${branchName}`
+                    });
+
+                    if (existingPulls.data.length > 0) {
+                      console.log(`Pull request already exists for repository ${repo.name}`);
+                      continue;
+                    }
+
                     // Get default branch
                     const { data: { default_branch } } = await github.repos.get({
                       owner: org,
@@ -79,7 +94,6 @@ jobs:
                       ref: `heads/${default_branch}`,
                     });
 
-                    const branchName = 'add-codeowners-branch5';
                     await github.git.createRef({
                       owner: org,
                       repo: repo.name,
@@ -92,7 +106,7 @@ jobs:
                       owner: org,
                       repo: repo.name,
                       path: 'CODEOWNERS',
-                      message: 'T3456: Create CODEOWNERS',
+                      message: 'Created CODEOWNERS',
                       content: Buffer.from(decodedContent).toString('base64'),
                       branch: branchName,
                     });
@@ -101,7 +115,7 @@ jobs:
                     await github.pulls.create({
                       owner: org,
                       repo: repo.name,
-                      title: 'T8888: Add CODEOWNERS file',
+                      title: `Add CODEOWNERS file to ${repo.name}`,
                       head: branchName,
                       base: default_branch,
                     });
