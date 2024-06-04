@@ -66,11 +66,6 @@ jobs:
                   });
                 } catch (error) {
                   if (error.status === 404) {
-                    // Get default branch
-                    const { data: { default_branch } } = await github.repos.get({
-                      owner: org,
-                      repo: repo.name,
-                    });
 
                     const branchName = `codeowners-feature-${repo.name}`;
                     
@@ -85,6 +80,12 @@ jobs:
                       console.log(`Pull request already exists for repository ${repo.name}`);
                       continue;
                     }
+
+                    // Get default branch
+                    const { data: { default_branch } } = await github.repos.get({
+                      owner: org,
+                      repo: repo.name,
+                    });
 
                     // Create a new branch
                     const { data: ref } = await github.git.getRef({
