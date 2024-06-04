@@ -32,28 +32,24 @@ jobs:
               }
             }
 
-            async function createBranchAndPR(repo, decodedContent) {
-              const branchName = `codeowners-feature-${repo.name}`;
-
-              // Check if a pull request already exists
+            async function checkExistingPulls(repo, branchName) {
               const existingPulls = await github.pulls.list({
                 owner: org,
                 repo: repo.name,
                 head: `${org}:${branchName}`
               });
+              return existingPulls.data.length > 0;
+            }
 
-              if (existingPulls.data.length > 0) {
-                console.log(`Pull request already exists for repository ${repo.name}`);
-                return;
-              }
-
-              // Get default branch
+            async function getDefaultBranch(repo) {
               const { data: { default_branch } } = await github.repos.get({
                 owner: org,
                 repo: repo.name,
               });
+              return default_branch;
+            }
 
-              // Create a new branch
+            async function createNewBranch(repo, default_branch, branchName) {
               const { data: ref } = await github.git.getRef({
                 owner: org,
                 repo: repo.name,
@@ -66,8 +62,9 @@ jobs:
                 ref: `refs/heads/${branchName}`,
                 sha: ref.object.sha,
               });
+            }
 
-              // Create CODEOWNERS file in the new branch
+            async function createFileInBranch(repo, decodedContent, branchName) {
               await github.repos.createOrUpdateFileContents({
                 owner: org,
                 repo: repo.name,
@@ -76,8 +73,9 @@ jobs:
                 content: Buffer.from(decodedContent).toString('base64'),
                 branch: branchName,
               });
+            }
 
-              // Create a pull request
+            async function createPullRequest(repo, branchName, default_branch) {
               await github.pulls.create({
                 owner: org,
                 repo: repo.name,
@@ -85,6 +83,21 @@ jobs:
                 head: branchName,
                 base: default_branch,
               });
+            }
+
+            async function createBranchAndPR(repo, decodedContent) {
+              const branchName = `codeowners-feature-${repo.name}`;
+
+              if (await checkExistingPulls(repo, branchName)) {
+                console.log(`Pull request already exists for repository ${repo.name}`);
+                return;
+              }
+
+              const default_branch = await getDefaultBranch(repo);
+
+              await createNewBranch(repo, default_branch, branchName);
+              await createFileInBranch(repo, decodedContent, branchName);
+              await createPullRequest(repo, branchName, default_branch);
             }
 
             const sourceContent = await fetchContent('CODEOWNERS');
