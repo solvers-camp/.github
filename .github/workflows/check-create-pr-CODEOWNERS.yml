@@ -65,7 +65,7 @@ jobs:
                     path: 'CODEOWNERS',
                   });
                 } catch (error) {
-                  if (error.status === 404 && error.message === 'Not Found') {
+                  if (error.message.includes('Not Found')) {
 
                     const branchName = `codeowners-feature-${repo.name}`;
                     
