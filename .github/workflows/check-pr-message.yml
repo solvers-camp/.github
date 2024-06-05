@@ -35,7 +35,8 @@
               echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV         
               exit 1
             else
-              echo "error_message=" >> $GITHUB_ENV
+              #echo "error_message=" >> $GITHUB_ENV
+              echo "error_message=No issues in PR Title / Commit Title" >> $GITHUB_ENV
             fi
           shell: bash
 
@@ -45,6 +46,6 @@
           uses: mshick/add-pr-comment@v2
           with:
             message: |
-              ❌
-              ${{ env.error_message == '' && 'NULL' || env.error_message }}
+              ${{ env.error_message != '' && '❌\n' || '' }}
+              ${{ env.error_message }}
             allow-repeats: false
