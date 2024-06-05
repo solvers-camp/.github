@@ -41,9 +41,10 @@
 
         - name: Add PR comment
           # if: failure()
+          if: always()
           uses: mshick/add-pr-comment@v2
           with:
             message: |
               ❌
-              ${{ env.error_message }}
+              ${{ env.error_message == '' && 'NULL' || env.error_message }}
             allow-repeats: false
