@@ -45,7 +45,7 @@
           if: always()
           uses: mshick/add-pr-comment@v2
           with:
-            message: >-
-              ${{ env.error_message != '' && '❌\n' || 'No issues in PR Title / Commit Title' }}
-              ${{ env.error_message != '' && env.error_message || '' }}
+            message: |-
+              ${{ env.error_message != 'No issues in PR Title / Commit Title' && '❌' || '' }}
+              ${{ env.error_message }}
             allow-repeats: false
