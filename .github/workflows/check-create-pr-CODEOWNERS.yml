@@ -16,6 +16,11 @@ jobs:
           repository: ${{ github.repository_owner }}/.github
           token: ${{ secrets.TOKEN1 }}
 
+      - name: Install dependencies
+        shell: bash
+        run: npm install @actions/core @actions/github
+        working-directory: ./action
+
       - name: Check and copy CODEOWNERS
         uses: ./action
         with:
