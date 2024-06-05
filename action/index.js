@@ -136,7 +136,7 @@ async function run() {
 
     const settings = JSON.parse(settingsContent);
 
-    const repos = await octokit.paginate(octokit.repos.listForOrg, {
+    const repos = await octokit.paginate(octokit.rest.repos.listForOrg, {
         org,
         type: 'all',
     });
