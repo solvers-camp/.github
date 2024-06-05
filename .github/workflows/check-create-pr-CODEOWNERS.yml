@@ -14,30 +14,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: ${{ github.repository_owner }}/.github
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN1 }}
 
       - name: Install dependencies
         shell: bash
         run: npm install @actions/core @actions/github
         working-directory: ./action
 
-      - name: Prepare private key
-        id: prepare_key
-        run: |
-          echo "${{ secrets.PRIVATE_KEY }}" | tr ' ' '\n' > private.pem
-          echo "::set-output name=private_key::$(cat private.pem)"
-        shell: bash
-
-      - name: Generate GitHub App token
-        id: generate_token
-        uses: tibdex/github-app-token@v1
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ steps.prepare_key.outputs.private_key }}
-
-
       - name: Check and copy CODEOWNERS
         uses: ./action
         with:
-          github-token: ${{ steps.generate_token.outputs.token }}
+          github-token: ${{secrets.TOKEN1}}
           source-repo: .github
