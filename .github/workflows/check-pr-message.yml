@@ -40,12 +40,11 @@
           shell: bash
 
         - name: Add PR comment
-          if: failure()
+          # if: failure()
+          if: always()
           uses: mshick/add-pr-comment@v2
           with:
             message: |
-              ${{ env.error_message }}
               ❌
-            repo-token: ${{ secrets.GH_TOKEN }}
-            repo-token-user-login: 'github-actions[bot]'
+              ${{ env.error_message == '' && 'NULL' || env.error_message }}
             allow-repeats: false
