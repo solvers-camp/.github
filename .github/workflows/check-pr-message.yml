@@ -41,11 +41,10 @@
           shell: bash
 
         - name: Add PR comment
-          # if: failure()
           if: always()
           uses: mshick/add-pr-comment@v2
           with:
-            message: |
-              ${{ env.error_message != '' && '❌\n' || '' }}
+            message: |-
+              ${{ env.error_message == 'No issues in PR Title / Commit Title' && '👍' || '❌' }}
               ${{ env.error_message }}
             allow-repeats: false
