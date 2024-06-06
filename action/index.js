@@ -130,7 +130,7 @@ async function run() {
     }
 
     const sourceContent = await fetchContent('CODEOWNERS');
-    const settingsContent = await fetchContent('.github/codeowners-settings.yml');
+    const settingsContent = await fetchContent('.github/codeowners_repos_config.json');
 
     if (!sourceContent || !settingsContent) {
         return;
