@@ -161,4 +161,12 @@
   
 - **Permissions**: The workflow uses read access to the repository contents and write access to pull requests.
 
+## codeowners_repos_config.json
+- **Purpose**: This configuration specifies which repositories to include and exclude for certain operations, ensuring targeted and efficient processing based on predefined criteria.
+   
+- **Include**: The repositories listed under "include" are the ones that will be processed or targeted by the workflow or script.
+   
+- **Exclude**: The repositories listed under "exclude" are the ones that will be ignored or skipped by the workflow or script.
+
+
 
