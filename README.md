@@ -171,6 +171,8 @@
 ## CODEOWNERS-checker/action/index.js
 - **Purpose**: The script ensures that specified repositories within an organization have a CODEOWNERS file.If a repository does not already have a CODEOWNERS file, the script creates a new branch, adds the CODEOWNERS file, and then opens a pull request to merge these changes. It uses a configuration file to determine which repositories to include or exclude from this operation.
 
+- **package.json**: The package.json includes the dependencies for @actions/core and @actions/github.
+
 - **Setup and Authentication**:
      - The script retrieves a GitHub token for authentication.
      - It sets up an Octokit instance (GitHub API client) using this token.
