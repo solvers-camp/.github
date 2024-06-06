@@ -161,14 +161,14 @@
   
 - **Permissions**: The workflow uses read access to the repository contents and write access to pull requests.
 
-## codeowners_repos_config.json
+## .github : codeowners_repos_config.json
 - **Purpose**: This configuration specifies which repositories to include and exclude for certain operations, ensuring targeted and efficient processing based on predefined criteria.
    
 - **Include**: The repositories listed under "include" are the ones that will be processed or targeted by the workflow or script.
    
 - **Exclude**: The repositories listed under "exclude" are the ones that will be ignored or skipped by the workflow or script.
 
-## index.js
+## CODEOWNERS-checker/action/index.js
 - **Purpose**: The script ensures that specified repositories within an organization have a CODEOWNERS file.If a repository does not already have a CODEOWNERS file, the script creates a new branch, adds the CODEOWNERS file, and then opens a pull request to merge these changes. It uses a configuration file to determine which repositories to include or exclude from this operation.
 
 - **Setup and Authentication**:
@@ -190,7 +190,7 @@
              - Checks if the repository already has a CODEOWNERS file.
              - If not, it creates a branch, adds the CODEOWNERS file, and opens a pull request.
 
-## action.yml
+## CODEOWNERS-checker/action/action.yml
 - **Purpose**: This action takes a GitHub token and the name of a source repository as inputs. It runs a Node.js script (index.js) to check for the presence of CODEOWNERS files in specified repositories.
 
 - **Inputs**:
