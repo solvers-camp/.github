@@ -168,5 +168,26 @@
    
 - **Exclude**: The repositories listed under "exclude" are the ones that will be ignored or skipped by the workflow or script.
 
+## index.js
+- **Purpose**: The script ensures that specified repositories within an organization have a CODEOWNERS file.If a repository does not already have a CODEOWNERS file, the script creates a new branch, adds the CODEOWNERS file, and then opens a pull request to merge these changes. It uses a configuration file to determine which repositories to include or exclude from this operation.
+
+- **Setup and Authentication**:
+     - The script retrieves a GitHub token for authentication.
+     - It sets up an Octokit instance (GitHub API client) using this token.
+     - It identifies the organization and the source repository from the workflow inputs.
+
+- **Process**:
+     - _fetchContent_: Reads the content of the CODEOWNERS file and the configuration file from the local directory.
+     - _checkExistingPulls_: Checks if there are any existing pull requests with the same branch name for the repository.
+     - _getDefaultBranch_: Retrieves the default branch name of a repository.
+     - _createNewBranch_: Creates a new branch from the default branch.
+     - _createFileInBranch_: Adds the CODEOWNERS file to the new branch.
+     - _createPullRequest_: Opens a pull request to merge the new branch into the default branch.
+     - _Main Logic_:
+         - Reads the CODEOWNERS file and configuration settings.
+         - Lists all repositories in the organization.
+         - For each repository in the include list and not in the exclude list:
+                   - Checks if the repository already has a CODEOWNERS file.
+                   - If not, it creates a branch, adds the CODEOWNERS file, and opens a pull request.
 
 
