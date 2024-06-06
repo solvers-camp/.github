@@ -1,5 +1,3 @@
-# action.yml
-
 name: 'Check and Create PR CODEOWNERS'
 description: 'Checks and creates PR for CODEOWNERS'
 inputs:
