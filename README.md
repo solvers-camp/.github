@@ -177,17 +177,17 @@
      - It identifies the organization and the source repository from the workflow inputs.
 
 - **Process**:
-     - _fetchContent_: Reads the content of the CODEOWNERS file and the configuration file from the local directory.
-     - _checkExistingPulls_: Checks if there are any existing pull requests with the same branch name for the repository.
-     - _getDefaultBranch_: Retrieves the default branch name of a repository.
-     - _createNewBranch_: Creates a new branch from the default branch.
-     - _createFileInBranch_: Adds the CODEOWNERS file to the new branch.
-     - _createPullRequest_: Opens a pull request to merge the new branch into the default branch.
-     - _Main Logic_:
+     - _**fetchContent**_: Reads the content of the CODEOWNERS file and the configuration file from the local directory.
+     - _**checkExistingPulls**_: Checks if there are any existing pull requests with the same branch name for the repository.
+     - _**getDefaultBranch**_: Retrieves the default branch name of a repository.
+     - _**createNewBranch**_: Creates a new branch from the default branch.
+     - _**createFileInBranch**_: Adds the CODEOWNERS file to the new branch.
+     - _**createPullRequest**_: Opens a pull request to merge the new branch into the default branch.
+     - **Main Logic**:
          - Reads the CODEOWNERS file and configuration settings.
          - Lists all repositories in the organization.
          - For each repository in the include list and not in the exclude list:
-                   - Checks if the repository already has a CODEOWNERS file.
-                   - If not, it creates a branch, adds the CODEOWNERS file, and opens a pull request.
+             - Checks if the repository already has a CODEOWNERS file.
+             - If not, it creates a branch, adds the CODEOWNERS file, and opens a pull request.
 
 
