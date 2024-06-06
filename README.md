@@ -190,4 +190,18 @@
              - Checks if the repository already has a CODEOWNERS file.
              - If not, it creates a branch, adds the CODEOWNERS file, and opens a pull request.
 
+## action.yml
+- **Purpose**: This action takes a GitHub token and the name of a source repository as inputs. It runs a Node.js script (index.js) to check for the presence of CODEOWNERS files in specified repositories.
+
+- **Inputs**:
+     - _**github-token**_: This is the token used to authenticate with the GitHub API.
+         - required: true
+     - _**source-repo**_: This is the repository where the source CODEOWNERS file is located.
+         - required: true
+
+- **Runs**:
+     - _**using: 'node12'**_: Specifies that this action runs using Node.js version 12.
+     - _**main: 'index.js'**_: Indicates that the main script file for this action is index.js.
+
+
 
