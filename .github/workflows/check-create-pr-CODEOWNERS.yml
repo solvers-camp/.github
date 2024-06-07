@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  copy_codeowners:
+  copy_codeowners: 
     runs-on: ubuntu-latest
 
     steps:
