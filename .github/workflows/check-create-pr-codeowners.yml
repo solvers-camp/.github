@@ -8,6 +8,8 @@ on:
 jobs:
   copy_codeowners: 
     runs-on: ubuntu-latest
+    env:
+      CODEOWNERS_APP_ID: ${{ secrets.CODEOWNERS_APP_ID }}
 
     steps:
       - name: Checkout repository
