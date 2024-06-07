@@ -31,7 +31,7 @@ Before running the workflow, you need to create a GitHub App and install it in y
 
 ## Store the App ID and Private Key in Secrets
 
-1. Go to the repository where you have the workflow.
+1. Go to the organization/repository where you have the workflow.
 2. Navigate to Settings > Secrets.
 3. Click on "New repository secret".
 4. Create a new secret named `CODEOWNERS_APP_ID` and paste the App ID as its value.
@@ -43,7 +43,7 @@ The `tibdex/github-app-token@v1` action is used in the workflow to generate a Gi
 
 The action requires two inputs: `app_id` and `private_key`. These are provided through the `CODEOWNERS_APP_ID` and `CODEOWNERS_PRIVATE_KEY` secrets respectively.
 
-Once the prerequisites are met, you can run the workflow in your machine. The workflow will use the GitHub App to generate a token and use it to check and copy CODEOWNERS.
+Once the prerequisites are met, you can run the workflow in your machine. The workflow will use the GitHub App to generate a token and use it to check-create-pr-codeowners.
 
 # actions/codeowners-checker
 
