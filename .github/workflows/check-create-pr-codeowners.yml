@@ -1,4 +1,4 @@
-name: Check and Create PR CODEOWNERS
+name: check and create pr codeowners
 
 on:
   schedule:
