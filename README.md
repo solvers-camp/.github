@@ -136,3 +136,74 @@
     - j2lint **$GITHUB_WORKSPACE/data** Runs the j2lint tool on the data directory within the checked-out repository.
 
 - **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
+
+## Workflow : check-create-pr-CODEOWNERS.yml
+- **Purpose**: This workflow automates the maintenance of the CODEOWNERS file across the organization's repositories. By running daily and allowing manual triggers, it ensures the CODEOWNERS file is up-to-date, reflecting current repository access and code review responsibilities.
+  
+- **Trigger**: on schedule and manually triggered
+  
+- **Job**:
+     - The **actions/checkout@v2** action is used to check out the .github repository from the organization.
+         - **with**: Defines the inputs for the action.
+              - repository: ${{ github.repository_owner }}/.github: Specifies the repository to check out. ${{ github.repository_owner }} dynamically gets the owner of the current repository and targets the .github repository.
+              - token: ${{ secrets.GITHUB_TOKEN }}: Uses a GitHub token stored in secrets to authenticate the checkout process.
+  
+     - The **tibdex/github-app-token@v1** action is used to generate a GitHub App token for further actions.
+          - **id**: 'generate_token': Assigns an ID to this step for referencing its outputs in subsequent steps.
+          - **with**: Defines the inputs for the action.
+              - app_id: ${{ secrets.APP_ID }}: Uses the GitHub App ID stored in secrets to identify the app.
+              - private_key: ${{ secrets.PRIVATE_KEY }}: Uses the private key stored in secrets to authenticate and generate the token.
+  
+     - The **solvers-camp/CODEOWNERS-checker/action@main** action is used to check the CODEOWNERS file and perform necessary updates.
+         - **with**: Defines the inputs for the action.
+              - github-token: ${{ steps.generate_token.outputs.token }}: Uses the GitHub App token generated in the previous step to authenticate the action.
+              - source-repo: .github: Specifies the source repository for the CODEOWNERS file.
+  
+- **Permissions**: The workflow uses read access to the repository contents and write access to pull requests.
+
+## .github : codeowners_repos_config.json
+- **Purpose**: This configuration specifies which repositories to include and exclude for certain operations, ensuring targeted and efficient processing based on predefined criteria.
+   
+- **Include**: The repositories listed under "include" are the ones that will be processed or targeted by the workflow or script.
+   
+- **Exclude**: The repositories listed under "exclude" are the ones that will be ignored or skipped by the workflow or script.
+
+## CODEOWNERS-checker/action/index.js
+- **Purpose**: The script ensures that specified repositories within an organization have a CODEOWNERS file.If a repository does not already have a CODEOWNERS file, the script creates a new branch, adds the CODEOWNERS file, and then opens a pull request to merge these changes. It uses a configuration file to determine which repositories to include or exclude from this operation.
+
+- **package.json**: The package.json includes the dependencies for _**@actions/core and @actions/github**_.
+
+- **Setup and Authentication**:
+     - The script retrieves a GitHub token for authentication.
+     - It sets up an Octokit instance (GitHub API client) using this token.
+     - It identifies the organization and the source repository from the workflow inputs.
+
+- **Process**:
+     - _**fetchContent**_: Reads the content of the CODEOWNERS file and the configuration file from the local directory.
+     - _**checkExistingPulls**_: Checks if there are any existing pull requests with the same branch name for the repository.
+     - _**getDefaultBranch**_: Retrieves the default branch name of a repository.
+     - _**createNewBranch**_: Creates a new branch from the default branch.
+     - _**createFileInBranch**_: Adds the CODEOWNERS file to the new branch.
+     - _**createPullRequest**_: Opens a pull request to merge the new branch into the default branch.
+     - **Main Logic**:
+         - Reads the CODEOWNERS file and configuration settings.
+         - Lists all repositories in the organization.
+         - For each repository in the include list and not in the exclude list:
+             - Checks if the repository already has a CODEOWNERS file.
+             - If not, it creates a branch, adds the CODEOWNERS file, and opens a pull request.
+
+## CODEOWNERS-checker/action/action.yml
+- **Purpose**: This action takes a GitHub token and the name of a source repository as inputs. It runs a Node.js script (index.js) to check for the presence of CODEOWNERS files in specified repositories.
+
+- **Inputs**:
+     - _**github-token**_: This is the token used to authenticate with the GitHub API.
+         - required: true
+     - _**source-repo**_: This is the repository where the source CODEOWNERS file is located.
+         - required: true
+
+- **Runs**:
+     - _**using: 'node12'**_: Specifies that this action runs using Node.js version 12.
+     - _**main: 'index.js'**_: Indicates that the main script file for this action is index.js.
+
+
+
