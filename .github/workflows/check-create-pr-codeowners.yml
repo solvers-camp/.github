@@ -20,7 +20,7 @@ jobs:
         id: generate_token
         uses: tibdex/github-app-token@v1
         with:
-          app_id: ${{ secrets.CODEOWNERS_APP_ID }}
+          app_id: ${{ env.CODEOWNERS_APP_ID }}
           private_key: ${{ secrets.CODEOWNERS_PRIVATE_KEY }}
 
       - name: Check and copy CODEOWNERS
