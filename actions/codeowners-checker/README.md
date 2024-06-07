@@ -1,4 +1,4 @@
-## CODEOWNERS-checker/action/index.js
+## dist/index.js
 - **Purpose**: The script ensures that specified repositories within an organization have a CODEOWNERS file.If a repository does not already have a CODEOWNERS file, the script creates a new branch, adds the CODEOWNERS file, and then opens a pull request to merge these changes. It uses a configuration file to determine which repositories to include or exclude from this operation.
 
 - **package.json**: The package.json includes the dependencies for _**@actions/core and @actions/github**_.
@@ -22,7 +22,7 @@
              - Checks if the repository already has a CODEOWNERS file.
              - If not, it creates a branch, adds the CODEOWNERS file, and opens a pull request.
 
-## CODEOWNERS-checker/action/action.yml
+## action.yml
 - **Purpose**: This action takes a GitHub token and the name of a source repository as inputs. It runs a Node.js script (index.js) to check for the presence of CODEOWNERS files in specified repositories.
 
 - **Inputs**:
