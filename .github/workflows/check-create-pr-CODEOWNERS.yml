@@ -24,7 +24,7 @@ jobs:
           private_key: ${{ secrets.PRIVATE_KEY }}
 
       - name: Check and copy CODEOWNERS
-        uses: solvers-camp/CODEOWNERS-checker/action@main
+        uses: solvers-camp/CODEOWNERS-checker@main
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
           source-repo: .github
