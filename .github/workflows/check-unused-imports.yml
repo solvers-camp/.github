@@ -26,7 +26,8 @@ jobs:
           # output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 || true)
           # output=$(pylint --disable=all --enable=W0611 --msg-template='{msg_id}: {msg}' $pylint_files 2>&1 || true)
           # output=$(pylint --disable=all --enable=W0611 --output-format=text $pylint_files 2>&1 || true)
-          output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | tail -n 1 || true)
+          # output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | tail -n 1 || true)
+          output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | awk 'BEGIN { ORS = " " } { print }' || true)
           echo "Vijai $output"
           if [[ -n "$output" ]]; then
             # echo "$output"
