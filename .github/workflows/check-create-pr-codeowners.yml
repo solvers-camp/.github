@@ -1,0 +1,30 @@
+name: check and create pr codeowners
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  copy_codeowners: 
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ github.repository_owner }}/.github
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate GitHub App token
+        id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.CODEOWNERS_APP_ID }}
+          private_key: ${{ secrets.CODEOWNERS_PRIVATE_KEY }}
+
+      - name: Check and copy CODEOWNERS
+        uses: ./actions/codeowners-checker
+        with:
+          github-token: ${{ steps.generate_token.outputs.token }}
+          source-repo: .github

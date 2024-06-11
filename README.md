@@ -136,3 +136,35 @@
     - j2lint **$GITHUB_WORKSPACE/data** Runs the j2lint tool on the data directory within the checked-out repository.
 
 - **Permissions**: The workflow has read access to the repository contents and write access to pull requests.
+
+## Workflow : check-create-pr-CODEOWNERS.yml
+- **Purpose**: This workflow automates the maintenance of the CODEOWNERS file across the organization's repositories. By running daily and allowing manual triggers, it ensures the CODEOWNERS file is up-to-date, reflecting current repository access and code review responsibilities.
+  
+- **Trigger**: on schedule and manually triggered
+  
+- **Job**:
+     - The **actions/checkout@v2** action is used to check out the .github repository from the organization.
+         - **with**: Defines the inputs for the action.
+              - repository: ${{ github.repository_owner }}/.github: Specifies the repository to check out. ${{ github.repository_owner }} dynamically gets the owner of the current repository and targets the .github repository.
+              - token: ${{ secrets.GITHUB_TOKEN }}: Uses a GitHub token stored in secrets to authenticate the checkout process.
+  
+     - The **tibdex/github-app-token@v1** action is used to generate a GitHub App token for further actions.
+          - **id**: 'generate_token': Assigns an ID to this step for referencing its outputs in subsequent steps.
+          - **with**: Defines the inputs for the action.
+              - app_id: ${{ secrets.APP_ID }}: Uses the GitHub App ID stored in secrets to identify the app.
+              - private_key: ${{ secrets.PRIVATE_KEY }}: Uses the private key stored in secrets to authenticate and generate the token.
+  
+     - The **solvers-camp/CODEOWNERS-checker/action@main** action is used to check the CODEOWNERS file and perform necessary updates.
+         - **with**: Defines the inputs for the action.
+              - github-token: ${{ steps.generate_token.outputs.token }}: Uses the GitHub App token generated in the previous step to authenticate the action.
+              - source-repo: .github: Specifies the source repository for the CODEOWNERS file.
+  
+- **Permissions**: The workflow uses read access to the repository contents and write access to pull requests.
+
+## .github : codeowners_repos_config.json
+- **Purpose**: This configuration specifies which repositories to include and exclude for certain operations, ensuring targeted and efficient processing based on predefined criteria.
+   
+- **Include**: The repositories listed under "include" are the ones that will be processed or targeted by the workflow or script.
+   
+- **Exclude**: The repositories listed under "exclude" are the ones that will be ignored or skipped by the workflow or script.
+

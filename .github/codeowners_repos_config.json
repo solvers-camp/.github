@@ -1,0 +1,4 @@
+{
+  "include": ["python-composite-action","ghas-lab", "python-reusable-actions", "python-weather-service"],
+  "exclude": ["sync-destination", "sync-source", "python-ci-cd"]
+}
