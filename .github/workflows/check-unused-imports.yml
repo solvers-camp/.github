@@ -29,7 +29,7 @@ jobs:
           # output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | tail -n 1 || true)
           output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | awk 'BEGIN { ORS = " " } { print }' || true)
           # output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | grep -v "------------------------------------ Your code has been rated at 10.00/10" | awk 'BEGIN { ORS = " " } { print }' || true)
-          echo "Vijai $output"
+          echo "$output"
           if [[ -n "$output" ]]; then
             # echo "$output"
             echo "error_message=$output" >> $GITHUB_ENV
@@ -42,7 +42,4 @@ jobs:
           message: |-
             ${{ env.error_message != '' && '❌' || '👍' }}
             ${{ env.error_message }}
-            allow-repeats: false
-          # env:
-            # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-            
+          allow-repeats: true
