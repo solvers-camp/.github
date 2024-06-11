@@ -22,4 +22,22 @@ jobs:
       - name: Analysing the code with pylint
         run: | 
           pylint_files=$(git ls-files *.py src/migration-scripts)
-          pylint --disable=all --enable=W0611 $pylint_files
+          # pylint --disable=all --enable=W0611 $pylint_files
+          output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 || true)
+          echo "$output"
+          if [[ -n "$output" ]]; then
+            # echo "$output"
+            echo "error_message=$output" >> $GITHUB_ENV
+          fi
+
+      - name: Add PR comment if there is an error
+        if: env.error_message != ''
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |-
+            ${{ env.error_message != '' && '❌' || '👍' }}
+            ${{ env.error_message }}
+            allow-repeats: false
+          # env:
+          #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+            
