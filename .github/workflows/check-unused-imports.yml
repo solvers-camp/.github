@@ -43,6 +43,6 @@ jobs:
             ${{ env.error_message != '' && '❌' || '👍' }}
             ${{ env.error_message }}
             allow-repeats: false
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          # env:
+            # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
             
