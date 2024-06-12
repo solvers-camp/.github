@@ -40,6 +40,7 @@ jobs:
 
       - name: Add PR comment
         # if: env.error_message != ''
+        if: always()
         uses: mshick/add-pr-comment@v2
         with:
           message: |-
