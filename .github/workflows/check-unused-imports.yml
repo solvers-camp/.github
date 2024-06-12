@@ -33,10 +33,13 @@ jobs:
           if [[ -n "$output" ]]; then
             # echo "$output"
             echo "error_message=$output" >> $GITHUB_ENV
+            exit 1
+          else
+              echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
           fi
 
       - name: Add PR comment
-        if: env.error_message != ''
+        # if: env.error_message != ''
         uses: mshick/add-pr-comment@v2
         with:
           message: |-
