@@ -28,6 +28,7 @@ jobs:
           # if [[ "$output" == *"W0611: Unused path imported from os"* ]]; then
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
           else
+            output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             echo "error_message=$output" >> $GITHUB_ENV
             echo "$output"
             exit 1
