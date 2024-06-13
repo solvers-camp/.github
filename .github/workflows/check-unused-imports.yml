@@ -24,12 +24,13 @@ jobs:
           pylint_files=$(git ls-files *.py src/migration-scripts)
           output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | awk 'BEGIN { ORS = " " } { print }' || true)
           if [[ -n "$output" ]]; then
-            echo "error_message=$output" >> $GITHUB_ENV
             if [[ "$output" != *"------------------------------------ Your code has been rated at 10.00/10"* ]]; then
+              echo "error_message=$output" >> $GITHUB_ENV
               echo "$output"
               exit 1
             else
               echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
+            fi
           fi
 
       - name: Add PR comment
