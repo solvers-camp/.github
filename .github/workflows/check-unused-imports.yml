@@ -19,12 +19,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install pylint
 
-      - name: Analysing the code with pylint
+      - name: Analysing Vijai code with pylint
         run: | 
+          echo "Start"
           pylint_files=$(git ls-files *.py src/migration-scripts)
           pylint --disable=all --enable=W0611 $pylint_files
           exit_code=$?
-          echo "Begin $$exit_code"
+          echo "Begin $exit_code"
           if [[ $exit_code -eq 0 ]]; then
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
           else
