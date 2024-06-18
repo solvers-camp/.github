@@ -33,6 +33,7 @@ jobs:
           else
             echo "Else $exit_code"
             echo "First $output"
+            output=$(echo "$output" | xargs)
             output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             output=${output//"*"/}
             echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
