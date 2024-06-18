@@ -22,12 +22,12 @@ jobs:
       - name: Analysing the code with pylint
         run: | 
           pylint_files=$(git ls-files *.py src/migration-scripts)
-          output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | awk 'BEGIN { ORS = " " } { print }' || true)
-          output=$(echo "$output" | xargs)
-          echo "$output"          
-          if [[ "$output" == "------------------------------------ Your code has been rated at 10.00/10" ]]; then
+          pylint --disable=all --enable=W0611 $pylint_files
+          exit_code=$?
+          if [[ $exit_code -eq 0 ]]; then
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
           else
+            output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | awk 'BEGIN { ORS = " " } { print }' || true)
             output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             output=${output//"*"/}
             echo "error_message=$output" >> $GITHUB_ENV
