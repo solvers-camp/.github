@@ -21,24 +21,19 @@ jobs:
 
       - name: Analysing the code with pylint
         run: | 
-          # echo "Start"
           pylint_files=$(git ls-files *.py src/migration-scripts)
           set +e
           output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1)
           exit_code=$?
           set -e
-          # echo "Begin $exit_code"
           if [[ $exit_code -eq 0 ]]; then
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
             echo "No issues in unused-imports"
           else
-            # echo "Else $exit_code"
-            # echo "First $output"
             output=$(echo "$output" | xargs)
             output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             output=${output//"*"/}
             echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
-            # echo "Second $output"
             exit 1
           fi
            
