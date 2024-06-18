@@ -35,11 +35,20 @@ jobs:
             exit 1
           fi
 
+      - name: Prepare PR comment
+        run: |
+          if [[ "${{ env.error_message }}" == "No issues in unused-imports" ]]; then
+            echo "PR_COMMENT=👍 ${{ env.error_message }}" >> $GITHUB_ENV
+          else
+            echo "PR_COMMENT=❌ ${{ env.error_message }}" >> $GITHUB_ENV
+          fi
+
+            
       - name: Add PR comment
         if: always()
         uses: mshick/add-pr-comment@v2
         with:
           message: |-
-            ${{ env.error_message == 'No issues in unused-imports' && '👍' || '❌' }}
+            # ${{ env.error_message == 'No issues in unused-imports' && '👍' || '❌' }}
             ${{ env.error_message }}
           allow-repeats: true
