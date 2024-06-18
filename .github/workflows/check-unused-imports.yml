@@ -33,6 +33,7 @@ jobs:
             output=$(echo "$output" | xargs)
             output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             output=${output//"*"/}
+            echo "$output" 
             echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
             exit 1
           fi
