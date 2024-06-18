@@ -28,12 +28,12 @@ jobs:
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
           else
             output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1 | awk 'BEGIN { ORS = " " } { print }' || true)
-            echo "$output"
+            echo "First $output"
             output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             output=${output//"*"/}
             # echo "error_message=$output" >> $GITHUB_ENV
             echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
-            echo "$output"
+            echo "Second $output"
             exit 1
           fi
            
