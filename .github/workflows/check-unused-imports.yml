@@ -45,4 +45,4 @@ jobs:
           message: |-
             ${{ env.error_message == 'No issues in unused-imports' && '👍' || '❌' }}
             ${{ env.error_message }}
-          allow-repeats: true
+          allow-repeats: false
