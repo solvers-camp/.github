@@ -46,4 +46,4 @@ jobs:
             ${{ env.error_message == 'No issues in unused-imports' && '👍' || '❌' }}
             ${{ env.error_message }}
           message-id: "COMMENT1"
-          allow-repeats: true
+          allow-repeats: false
