@@ -41,7 +41,7 @@ jobs:
         if: env.CODEOWNERS_MISSING_IN_CURR_REPO == 'true'
         id: check_codeowneer_existence_in_github
         run: |
-          CODEOWNERS_FILE_PATH="reusable-actions/.github/CODEOWNERS"
+          CODEOWNERS_FILE_PATH="reusable-actions/CODEOWNERS"
           if [[ -f "$CODEOWNERS_FILE_PATH" ]]; then
             echo "CODEOWNERS file exists in .github repository. Creating PR in current repository..."
             echo "CODEOWNERS_EXISTS_IN_GITHUB=true" >> $GITHUB_ENV
