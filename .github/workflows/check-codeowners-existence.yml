@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-      contents: write
+      contents: read
 
     steps:
       - name: Checkout current repository
@@ -19,59 +19,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check codeowners existence in current repository
-        id: check_codeowneer_existence_in_repo1
+        id: check_codeowneer_existence_current_repo
         run: |
           CODEOWNERS_FILE_PATH="CODEOWNERS"
           if [[ ! -f "$CODEOWNERS_FILE_PATH" ]]; then
             echo "CODEOWNERS file does not exist in current repository. Checking in .github repository..."
-            echo "CODEOWNERS_MISSING_IN_CURR_REPO=true" >> $GITHUB_ENV
+            echo "CODEOWNERS_MISSING_IN_CURR_REPO=true" >> $
+            exit 1
           else
             echo "CODEOWNERS file exists in current repository. No action needed."
           fi
         shell: bash
-
-      - name: Checkout .github repository
-        if: env.CODEOWNERS_MISSING_IN_CURR_REPO == 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: solvers-camp/.github
-          path: reusable-actions
-
-      - name: Check codeowners existence in .github repository
-        if: env.CODEOWNERS_MISSING_IN_CURR_REPO == 'true'
-        id: check_codeowneer_existence_in_github
-        run: |
-          CODEOWNERS_FILE_PATH="reusable-actions/CODEOWNERS"
-          if [[ -f "$CODEOWNERS_FILE_PATH" ]]; then
-            echo "CODEOWNERS file exists in .github repository. Creating PR in current repository..."
-            echo "CODEOWNERS_EXISTS_IN_GITHUB=true" >> $GITHUB_ENV
-          else
-            echo "CODEOWNERS file does not exist in .github repository. No action needed."
-          fi
-        shell: bash
-
-      - name: Copy CODEOWNERS file from .github to current repository
-        if: env.CODEOWNERS_EXISTS_IN_GITHUB == 'true'
-        run: |
-          cp reusable-actions/CODEOWNERS CODEOWNERS
-        shell: bash
-
-      - name: Create Pull Request in current repository
-        if: env.CODEOWNERS_EXISTS_IN_GITHUB == 'true'
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Add CODEOWNERS file"
-          body: "This PR adds a CODEOWNERS file to the repository."
-          commit-message: "Add CODEOWNERS file"
-          branch: "add-codeowners"
-          assignees: Thilaga-26,kumvijaya
-
-      - name: Add PR comment in current repository
-        if:  env.CODEOWNERS_MISSING_IN_CURR_REPO == 'true'
-        uses: mshick/add-pr-comment@v2
-        with:
-          message: |-
-            ${{ env.CODEOWNERS_EXISTS_IN_GITHUB != 'true' && '❌\nCreated PR as CODEOWNERS File NOTFOUND' || '👍\nNo issues. CODEOWNERS Exists' }}
-          message-id: "CODEOWNERS_VALIDATION"
-          allow-repeats: false
