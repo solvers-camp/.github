@@ -38,6 +38,7 @@ jobs:
           path: reusable-actions
 
       - name: Check codeowners existence in .github repository
+        if: env.CODEOWNERS_MISSING_IN_CURR_REPO == 'true'
         id: check_codeowneer_existence_in_github
         run: |
           CODEOWNERS_FILE_PATH="reusable-actions/.github/CODEOWNERS"
@@ -71,6 +72,6 @@ jobs:
         uses: mshick/add-pr-comment@v2
         with:
           message: |-
-            ${{ env.CODEOWNERS_EXISTS_IN_GITHUB != 'true' && '❌\nCreated PR as CODEOWNERS File NOTFOUND' || '👍\nNo issues. CODEOWNERS Exists' }}
+            ${{ env.CODEOWNERS_EXISTS_IN_GITHUB == 'true' && '❌\nCreated PR as CODEOWNERS File NOTFOUND' || '👍\nNo issues. CODEOWNERS Exists' }}
           message-id: "CODEOWNERS_VALIDATION"
           allow-repeats: false
