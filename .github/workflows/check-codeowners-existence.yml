@@ -75,3 +75,4 @@ jobs:
             ${{ env.CODEOWNERS_MISSING_IN_CURR_REPO == 'true' && '❌\nCreated PR as CODEOWNERS File NOTFOUND' || '👍\nNo issues. CODEOWNERS Exists' }}
           message-id: "CODEOWNERS_VALIDATION"
           allow-repeats: false
+          issue: ${{ github.event.pull_request.number }}
