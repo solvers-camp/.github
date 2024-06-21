@@ -24,7 +24,7 @@ jobs:
           CODEOWNERS_FILE_PATH="CODEOWNERS"
           if [[ ! -f "$CODEOWNERS_FILE_PATH" ]]; then
             echo "CODEOWNERS file does not exist in current repository. Checking in .github repository..."
-            echo "CODEOWNERS_MISSING_IN_CURR_REPO"=true" >> $GITHUB_ENV
+            echo "CODEOWNERS_MISSING_IN_CURR_REPO=true" >> $GITHUB_ENV
           else
             echo "CODEOWNERS file exists in current repository. No action needed."
           fi
