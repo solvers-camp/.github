@@ -23,7 +23,7 @@ jobs:
         run: |
           CODEOWNERS_FILE_PATH="CODEOWNERS"
           if [[ ! -f "$CODEOWNERS_FILE_PATH" ]]; then
-            echo "CODEOWNERS file does not exist in current repository. Checking in .github repository..."
+            echo "CODEOWNERS file does not exist in current repository - ${{ github.repository }}."
             echo "CODEOWNERS_MISSING_IN_CURR_REPO=true" >> $
             exit 1
           else
