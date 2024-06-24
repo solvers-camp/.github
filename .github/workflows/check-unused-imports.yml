@@ -22,7 +22,7 @@ jobs:
       - name: Analysing the code with pylint
         run: | 
           pylint_files=$(git ls-files *.py src/migration-scripts)
-          echo "pylint Files : $pylint_files"
+          # echo "pylint Files : $pylint_files"
           # set +e
           # output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1)
           # output=$(pylint --disable=all --enable=W0611 $pylint_files --output-format=json)
@@ -30,45 +30,17 @@ jobs:
           pylint --disable=all --enable=W0611 $pylint_files --output-format=json > pylint_output.json || true
 
           if [ -s pylint_output.json ]; then
-            echo "Pylint detected issues with unused imports."
+            # echo "Pylint detected issues with unused imports."
             jq '.' pylint_output.json
             output=$(jq -r '.[] | "\(.path):\(.message) (\(.symbol)) at line \(.line)"' pylint_output.json)
             echo "error_message=${output}" >> $GITHUB_ENV
-            echo "::error ::Unused imports detected."
+            echo "$output"
+            # echo "::error ::Unused imports detected."
             exit 1
           else
             echo "No issues with unused imports."
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
           fi
-          
-          # exit_code=$?
-          # set -e
-          # # echo "Pylint output: $output"
-          # echo "Exit code: $exit_code"  
-          # echo "Pylint output: $(cat pylint_output.json)"
-          # echo "error_message=" > $GITHUB_ENV # Clear the error_message before setting it        
-          # if [[ $exit_code -eq 0 ]]; then
-          #   echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
-          #   echo "No issues in unused-imports"
-          # else
-          #   output=$(cat pylint_output.json | xargs)
-          #   # output=$(echo "$output" | xargs)            
-          #   # output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
-          #   # output=${output//"*"/}
-          #   # echo "$output" 
-          #   # echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
-          #   # echo "error_message=${output}" >> $GITHUB_ENV
-          #   # exit 1
-          #   if [[ -z "$output" ]]; then
-          #     echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
-          #     echo "No issues in unused-imports"
-          #   else
-          #     echo "error_message=$(echo $output | jq -r '.[] | .message')" >> $GITHUB_ENV
-          #     echo "Unused imports found"
-          #     cat pylint_output.json
-          #     exit 1
-          #   fi
-          # fi
            
       - name: Add PR comment
         if: always()
