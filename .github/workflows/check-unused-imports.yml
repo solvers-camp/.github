@@ -22,13 +22,10 @@ jobs:
       - name: Analysing the code with pylint
         run: | 
           pylint_files=$(git ls-files *.py src/migration-scripts)
-          # echo "pylint Files : $pylint_files"
-          # set +e
-          # output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1)
-          # output=$(pylint --disable=all --enable=W0611 $pylint_files --output-format=json)
-          # pylint --disable=all --enable=W0611 $pylint_files --output-format=json > pylint_output.json
           pylint --disable=all --enable=W0611 $pylint_files --output-format=json > pylint_output.json || true
 
+          output=$(cat pylint_output.json | xargs)
+          
           if [ -s pylint_output.json ]; then
             # echo "Pylint detected issues with unused imports."
             jq '.' pylint_output.json
