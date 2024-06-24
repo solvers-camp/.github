@@ -23,7 +23,8 @@ jobs:
         run: | 
           pylint_files=$(git ls-files *.py src/migration-scripts)
           set +e
-          output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1)
+          # output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1)
+          output=$(pylint --disable=all --enable=W0611 $pylint_files --output-format=json)
           exit_code=$?
           set -e
           if [[ $exit_code -eq 0 ]]; then
@@ -31,8 +32,8 @@ jobs:
             echo "No issues in unused-imports"
           else
             output=$(echo "$output" | xargs)
-            output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
-            output=${output//"*"/}
+            # output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
+            # output=${output//"*"/}
             echo "$output" 
             echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
             exit 1
