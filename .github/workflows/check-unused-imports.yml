@@ -22,8 +22,9 @@ jobs:
       - name: Analysing the code with pylint
         run: | 
           # pylint_files=$(git ls-files *.py src/migration-scripts)
-          pylint_files=src/migration-scripts/*.py
-          pylint --disable=all --enable=W0611 $pylint_files --output-format=json
+          # pylint_files=src/migration-scripts/*.py
+          pylint --disable=all --enable=W0611 src/migration-scripts/*.py --output-format=json
+          # pylint --disable=all --enable=W0611 $pylint_files --output-format=json
 
           # output=$(cat pylint_output.json | xargs)
           # echo "Step1 $output"
