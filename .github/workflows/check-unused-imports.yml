@@ -31,7 +31,8 @@ jobs:
             # echo "Pylint detected issues with unused imports."
             jq '.' pylint_output.json
             output=$(jq -r '.[] | "\(.path):\(.message) (\(.symbol)) at line \(.line)"' pylint_output.json)
-            echo "error_message=${output}" >> $GITHUB_ENV
+            # echo "error_message=${output}" >> $GITHUB_ENV
+            echo "error_message=Pylint detected issues with unused imports" >> $GITHUB_ENV
             echo "$output"
             # echo "::error ::Unused imports detected."
             exit 1
