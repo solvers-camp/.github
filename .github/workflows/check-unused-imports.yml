@@ -36,7 +36,7 @@ jobs:
             # output=${output//"*"/}
             echo "$output" 
             # echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
-            echo "error_message=${output}" >> $GITHUB_ENV
+            # echo "error_message=${output}" >> $GITHUB_ENV
             exit 1
           fi
            
