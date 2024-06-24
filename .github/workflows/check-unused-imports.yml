@@ -22,20 +22,25 @@ jobs:
       - name: Analysing the code with pylint
         run: | 
           pylint_files=$(git ls-files *.py src/migration-scripts)
+          echo "pylint Files : $pylint_files"
           set +e
           # output=$(pylint --disable=all --enable=W0611 $pylint_files 2>&1)
-          output=$(pylint --disable=all --enable=W0611 $pylint_files --output-format=json)
+          # output=$(pylint --disable=all --enable=W0611 $pylint_files --output-format=json)
+          pylint --disable=all --enable=W0611 $pylint_files --output-format=json > pylint_output.json
           exit_code=$?
           set -e
-          echo "Pylint output: $output"
-          echo "Exit code: $exit_code"          
+          # echo "Pylint output: $output"
+          echo "Exit code: $exit_code"  
+          echo "Pylint output: $(cat pylint_output.json)"
+          echo "error_message=" > $GITHUB_ENV # Clear the error_message before setting it        
           if [[ $exit_code -eq 0 ]]; then
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
             echo "No issues in unused-imports"
           else
-            output=$(echo "$output" | xargs)
+            # output=$(echo "$output" | xargs)            
             # output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             # output=${output//"*"/}
+            output=$(cat pylint_output.json | xargs)
             echo "$output" 
             # echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
             echo "error_message=${output}" >> $GITHUB_ENV
