@@ -31,7 +31,7 @@ jobs:
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
             echo "No issues in unused-imports"
           else
-            output=$(echo "$output" | xargs)
+            # output=$(echo "$output" | xargs)
             # output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             # output=${output//"*"/}
             echo "$output" 
