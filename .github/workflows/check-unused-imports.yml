@@ -37,14 +37,23 @@ jobs:
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
             echo "No issues in unused-imports"
           else
+            output=$(cat pylint_output.json | xargs)
             # output=$(echo "$output" | xargs)            
             # output=${output//"------------------------------------ Your code has been rated at 10.00/10"/}
             # output=${output//"*"/}
-            output=$(cat pylint_output.json | xargs)
-            echo "$output" 
+            # echo "$output" 
             # echo "error_message=${output//$'\n'/. }" >> $GITHUB_ENV 
-            echo "error_message=${output}" >> $GITHUB_ENV
-            exit 1
+            # echo "error_message=${output}" >> $GITHUB_ENV
+            # exit 1
+            if [[ -z "$output" ]]; then
+              echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
+              echo "No issues in unused-imports"
+            else
+              echo "error_message=$(echo $output | jq -r '.[] | .message')" >> $GITHUB_ENV
+              echo "Unused imports found"
+              cat pylint_output.json
+              exit 1
+            fi
           fi
            
       - name: Add PR comment
