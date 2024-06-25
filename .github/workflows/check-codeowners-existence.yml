@@ -33,8 +33,9 @@ jobs:
         shell: bash
 
       - name: Add PR comment in current repository
+        if: always()
         uses: mshick/add-pr-comment@v2
         with:
-          message: "${{ env.CODEOWNERS_STATUS == 'NOTFOUND' && '❌\nCODEOWNERS File NOTFOUND' || '👍 No issues. CODEOWNERS Exists' }}"
+          message: "${{ env.CODEOWNERS_STATUS == 'NOTFOUND' && '❌ CODEOWNERS File NOTFOUND' || '👍 No issues. CODEOWNERS Exists' }}"
           message-id: "CODEOWNERS_VALIDATION"
           allow-repeats: false
