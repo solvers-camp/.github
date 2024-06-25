@@ -23,12 +23,12 @@ jobs:
         run: |
           CODEOWNERS_FILE_PATH="CODEOWNERS"
           if [[ ! -f "$CODEOWNERS_FILE_PATH" ]]; then
-            echo "CODEOWNERS file does not exist in current repository - ${{ github.repository }}."
-            echo "CODEOWNERS_STATUS=NOTFOUND" >> $GITHUB_ENV
+            echo "CODEOWNERS file does not exist in current repository - ${{ github.repository }}. Action needed."
+            echo "CODEOWNERS_STATUS=CODEOWNERS File Not Found" >> $GITHUB_ENV
             exit 1
           else
-            echo "CODEOWNERS file exists in current repository. No action needed."
-            echo "CODEOWNERS_STATUS=EXISTS" >> $GITHUB_ENV
+            echo "CODEOWNERS file exists in current repository - ${{ github.repository }}. No action needed."
+            echo "CODEOWNERS_STATUS=CODEOWNERS File Exists" >> $GITHUB_ENV
           fi
         shell: bash
 
@@ -36,6 +36,8 @@ jobs:
         if: always()
         uses: mshick/add-pr-comment@v2
         with:
-          message: "${{ env.CODEOWNERS_STATUS == 'NOTFOUND' && '❌ CODEOWNERS File NOTFOUND' || '👍 No issues. CODEOWNERS Exists' }}"
+          message: |-
+            ${{ env.CODEOWNERS_STATUS == 'CODEOWNERS File Not Found' && '❌' || '👍' }}
+            ${{ env.CODEOWNERS_STATUS }}
           message-id: "CODEOWNERS_VALIDATION"
           allow-repeats: false
