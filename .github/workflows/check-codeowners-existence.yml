@@ -24,18 +24,17 @@ jobs:
           CODEOWNERS_FILE_PATH="CODEOWNERS"
           if [[ ! -f "$CODEOWNERS_FILE_PATH" ]]; then
             echo "CODEOWNERS file does not exist in current repository - ${{ github.repository }}."
-            # echo "CODEOWNERS_MISSING_IN_CURR_REPO=true" >> $
-            echo "CODEOWNERS_MISSING_IN_CURR_REPO=true" >> $GITHUB_ENV
+            echo "CODEOWNERS_STATUS=NOTFOUND" >> $GITHUB_ENV
             exit 1
           else
             echo "CODEOWNERS file exists in current repository. No action needed."
+            echo "CODEOWNERS_STATUS=EXISTS" >> $GITHUB_ENV
           fi
         shell: bash
 
       - name: Add PR comment in current repository
         uses: mshick/add-pr-comment@v2
         with:
-          message: |-
-            ${{ env.CODEOWNERS_MISSING_IN_CURR_REPO != 'true' && '❌\nCODEOWNERS File NOTFOUND' || '👍\nNo issues. CODEOWNERS Exists' }}
+          message: "${{ env.CODEOWNERS_STATUS == 'NOTFOUND' && '❌\nCODEOWNERS File NOTFOUND' || '👍 No issues. CODEOWNERS Exists' }}"
           message-id: "CODEOWNERS_VALIDATION"
           allow-repeats: false
