@@ -58,4 +58,23 @@ jobs:
         ${{inputs.build-command}}
 
     - name: Perform CodeQL Analysis
+      id: codeql_analysis
       uses: github/codeql-action/analyze@v3
+
+    - name: Set analysis outcome message
+      run: |
+        if [ ${{ steps.codeql_analysis.outcome }} == 'success' ]; then
+          echo "error_message=CodeQL Analysis found no issues" >> $GITHUB_ENV
+        else
+          echo "error_message=CodeQL Analysis found issues. Please review the annotations" >> $GITHUB_ENV
+        fi
+    
+    - name: Add PR Comment Based on Analysis Outcome
+      uses: mshick/add-pr-comment@v2
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"
+        message: |-
+          ${{ env.error_message == 'CodeQL Analysis found no issues' && '👍' || '❌' }}
+          ${{ env.error_message }}    
+        message-id: "CODEQL_VALIDATION"    
+        allow-repeats: false
