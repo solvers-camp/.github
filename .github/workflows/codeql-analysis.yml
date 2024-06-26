@@ -62,16 +62,30 @@ jobs:
       id: codeql_analysis
       uses: github/codeql-action/analyze@v3
 
-    - name: Check CodeQL Analysis Outcome
+    # - name: Check CodeQL Analysis Outcome
+    #   if: always()
+    #   run: |
+    #     if [ "${{ steps.codeql_analysis.outcome }}" == "success" ]; then
+    #       echo "CODEQL Analysis Success"
+    #       echo "error_message=CodeQL Analysis found no issues" >> $GITHUB_ENV
+    #     else
+    #       echo "CODEQL Analysis Failed"
+    #       echo "error_message=CodeQL Analysis found issues. Please review the annotations" >> $GITHUB_ENV
+    #     fi 
+
+    - name: Determine Analysis Outcome
+      id: analysis_outcome
       if: always()
       run: |
-        if [ "${{ steps.codeql_analysis.outcome }}" == "success" ]; then
+        outcome=$(steps.codeql_analysis.outputs.result)
+        if [ "$outcome" == "success" ]; then
           echo "CODEQL Analysis Success"
           echo "error_message=CodeQL Analysis found no issues" >> $GITHUB_ENV
         else
           echo "CODEQL Analysis Failed"
           echo "error_message=CodeQL Analysis found issues. Please review the annotations" >> $GITHUB_ENV
-        fi      
+        fi
+
 
     - name: Add PR Comment Based on Analysis Outcome
       if: always()
