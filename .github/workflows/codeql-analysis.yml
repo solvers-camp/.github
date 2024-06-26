@@ -62,6 +62,7 @@ jobs:
       uses: github/codeql-action/analyze@v3
 
     - name: Set analysis outcome message
+      if: always()
       run: |
         if [ ${{ steps.codeql_analysis.outcome }} == 'success' ]; then
           echo "error_message=CodeQL Analysis found no issues" >> $GITHUB_ENV
@@ -70,6 +71,7 @@ jobs:
         fi
     
     - name: Add PR Comment Based on Analysis Outcome
+      if: always()
       uses: mshick/add-pr-comment@v2
       with:
         repo-token: "${{ secrets.GITHUB_TOKEN }}"
