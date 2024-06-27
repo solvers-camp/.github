@@ -29,7 +29,6 @@ jobs:
       actions: read
       contents: read
       security-events: write
-      pull-requests: write
 
     strategy:
       fail-fast: false
@@ -39,6 +38,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+
+    # Set up Python 11
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -59,61 +64,4 @@ jobs:
         ${{inputs.build-command}}
 
     - name: Perform CodeQL Analysis
-      id: codeql_analysis
       uses: github/codeql-action/analyze@v3
-
-    - name: Add PR Comment Based on Analysis Outcome
-      if: always()
-      uses: mshick/add-pr-comment@v2
-      with:
-        repo-token: "${{ secrets.GITHUB_TOKEN }}"
-        message: |
-            ${{ job.status == 'success' && '👍 CodeQL Analysis found no issues.' || '❌ CodeQL Analysis execution failed. Please review the workflow run for details.' }}
-        message-id: "CODEQL_VALIDATION"
-        allow-repeats: false
-
-    # - name: Check CodeQL Analysis Outcome
-    #   if: always()
-    #   run: |
-    #     if [ "${{ steps.codeql_analysis.outcome }}" == "success" ]; then
-    #       echo "CODEQL Analysis Success"
-    #       echo "error_message=CodeQL Analysis found no issues" >> $GITHUB_ENV
-    #     else
-    #       echo "CODEQL Analysis Failed"
-    #       echo "error_message=CodeQL Analysis found issues. Please review the annotations" >> $GITHUB_ENV
-    #     fi 
-
-    # - name: Determine Analysis Outcome
-    #   id: analysis_outcome
-    #   if: always()
-    #   run: |
-    #     outcome=$(steps.codeql_analysis.outputs.result)
-    #     if [ "$outcome" == "success" ]; then
-    #       echo "CODEQL Analysis Success"
-    #       echo "error_message=CodeQL Analysis found no issues" >> $GITHUB_ENV
-    #     else
-    #       echo "CODEQL Analysis Failed"
-    #       echo "error_message=CodeQL Analysis found issues. Please review the annotations" >> $GITHUB_ENV
-    #     fi
-
-    # - name: Check CodeQL Analysis Outcome
-    #   if: always()
-    #   run: |
-    #     if [ "${{ job.status }}" == "success" ]; then
-    #       echo "CODEQL Analysis Success"
-    #       echo "error_message=CodeQL Analysis found no issues" >> $GITHUB_ENV
-    #     else
-    #       echo "CODEQL Analysis Failed"
-    #       echo "error_message=CodeQL Analysis found issues. Please review the annotations" >> $GITHUB_ENV
-    #     fi 
-
-    # - name: Add PR Comment Based on Analysis Outcome
-    #   if: always()
-    #   uses: mshick/add-pr-comment@v2
-    #   with:
-    #     repo-token: "${{ secrets.GITHUB_TOKEN }}"
-    #     message: |-
-    #       ${{ env.error_message == 'CodeQL Analysis found no issues' && '👍' || '❌' }}
-    #       ${{ env.error_message }}    
-    #     message-id: "CODEQL_VALIDATION"    
-    #     allow-repeats: false
