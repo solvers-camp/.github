@@ -8,9 +8,9 @@
     check-pr-title:
       name: Check pull request title
       runs-on: ubuntu-latest
-      # permissions:
-      #   pull-requests: write
-      #   contents: read
+      permissions:
+        pull-requests: write
+        contents: read
       steps:
         - uses: actions/checkout@v3
           timeout-minutes: 2
