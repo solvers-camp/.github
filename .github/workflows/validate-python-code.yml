@@ -1,0 +1,45 @@
+name: Validate Python Code
+
+on:
+  pull_request:
+    paths:
+      - '**/*.py'
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install black ruff
+
+    - name: Get list of modified Python files
+      id: git_diff
+      run: |
+        git fetch origin ${{ github.base_ref }} --depth=1
+        git diff --name-only origin/${{ github.base_ref }}...${{ github.head_ref }} -- '*.py' > modified_files.txt
+
+    - name: Check formatting with Black
+      run: |
+        if [ -s modified_files.txt ]; then
+          xargs black --check < modified_files.txt
+        else
+          echo "No Python files modified."
+        fi
+
+    - name: Lint with Ruff
+      run: |
+        if [ -s modified_files.txt ]; then
+          xargs ruff check < modified_files.txt
+        else
+          echo "No Python files modified."
+        fi
