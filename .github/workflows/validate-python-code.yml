@@ -2,6 +2,14 @@ name: Validate python code using black and ruff
 
 on:
   workflow_call:
+    inputs:
+      base_ref:
+        description: 'The base branch to compare against'
+        required: true
+        default: 'main'
+      head_ref:
+        description: 'The head branch to compare'
+        required: true
 
 jobs:
   lint-and-format:
@@ -23,9 +31,17 @@ jobs:
     - name: Get list of modified Python files
       id: git_diff
       run: |
-        git fetch origin ${{ github.base_ref }} --depth=1
-        git fetch origin ${{ github.head_ref }} --depth=1
-        git diff --name-only origin/${{ github.base_ref }}...origin/${{ github.head_ref }} -- '*.py' > modified_files.txt
+        BASE_REF=${{ github.event.inputs.base_ref || github.base_ref }}
+        HEAD_REF=${{ github.event.inputs.head_ref || github.head_ref }}
+        
+        if [ -z "$BASE_REF" ] || [ -z "$HEAD_REF" ]; then
+          echo "Base and head refs must be specified."
+          exit 1
+        fi
+        
+        git fetch origin $BASE_REF --depth=1
+        git fetch origin $HEAD_REF --depth=1
+        git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
 
     - name: Check formatting with Black
       run: |
