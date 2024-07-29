@@ -6,10 +6,12 @@ on:
       base_ref:
         description: 'The base branch to compare against'
         required: true
+        default: 'current'
         type: string
       head_ref:
         description: 'The head branch to compare'
         required: true
+        default: 'black_and-ruff'
         type: string
 
 jobs:
@@ -44,14 +46,14 @@ jobs:
         git fetch origin $HEAD_REF --depth=1
 
         # Check if branches have a common ancestor
-        if ! git merge-base --is-ancestor $BASE_REF $HEAD_REF; then
+        if ! git merge-base --is-ancestor origin/$BASE_REF origin/$HEAD_REF; then
           echo "Branches $BASE_REF and $HEAD_REF do not have a common ancestor."
           # Handle the case where there is no common ancestor
-          git diff --name-only $BASE_REF $HEAD_REF -- '*.py' > modified_files.txt
+          git diff --name-only origin/$BASE_REF origin/$HEAD_REF -- '*.py' > modified_files.txt
         else
-          git diff --name-only $BASE_REF...$HEAD_REF -- '*.py' > modified_files.txt
+          git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
         fi
-        
+
     - name: Check contents of modified_files.txt
       run: |
         echo "Modified files:"
