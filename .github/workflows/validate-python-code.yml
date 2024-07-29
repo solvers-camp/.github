@@ -59,12 +59,12 @@ jobs:
         echo "Modified files:"
         cat modified_files.txt
 
-    - name: Check current directory
-      run: |
-        echo "Current directory:"
-        pwd
-        echo "Files in current directory:"
-        ls -la
+    # - name: Check current directory
+    #   run: |
+    #     echo "Current directory:"
+    #     pwd
+    #     echo "Files in current directory:"
+    #     ls -la
 
     - name: Lint with Ruff
       run: |
