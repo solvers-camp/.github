@@ -57,7 +57,13 @@ jobs:
     - name: Check formatting with Black
       run: |
         if [ -s modified_files.txt ]; then
-          xargs black --check < modified_files.txt
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              black --check "$file"
+            else
+              echo "File $file does not exist."
+            fi
+          done < modified_files.txt
         else
           echo "No Python files modified"
         fi
@@ -65,7 +71,13 @@ jobs:
     - name: Lint with Ruff
       run: |
         if [ -s modified_files.txt ]; then
-          xargs ruff check < modified_files.txt
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              ruff check "$file"
+            else
+              echo "File $file does not exist."
+            fi
+          done < modified_files.txt
         else
           echo "No Python files modified"
         fi
