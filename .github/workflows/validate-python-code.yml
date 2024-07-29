@@ -54,6 +54,18 @@ jobs:
           git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
         fi
 
+    - name: Check contents of modified_files.txt
+      run: |
+        echo "Modified files:"
+        cat modified_files.txt
+
+    - name: Check current directory
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "Files in current directory:"
+        ls -la
+
     - name: Check formatting with Black
       run: |
         if [ -s modified_files.txt ]; then
