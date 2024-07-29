@@ -44,6 +44,13 @@ jobs:
         
         git fetch origin $BASE_REF --depth=1
         git fetch origin $HEAD_REF --depth=1
+
+        # Check if branches have a common ancestor
+        if ! git merge-base --is-ancestor origin/$BASE_REF origin/$HEAD_REF; then
+          echo "Branches $BASE_REF and $HEAD_REF do not have a common ancestor."
+          exit 1
+        fi
+        
         git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
 
     - name: Check formatting with Black
