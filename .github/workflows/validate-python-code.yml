@@ -6,10 +6,11 @@ on:
       base_ref:
         description: 'The base branch to compare against'
         required: true
-        default: 'main'
+        default: 'current'
       head_ref:
         description: 'The head branch to compare'
         required: true
+        default: 'black_and-ruff'
 
 jobs:
   lint-and-format:
