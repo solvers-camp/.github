@@ -48,10 +48,11 @@ jobs:
         # Check if branches have a common ancestor
         if ! git merge-base --is-ancestor origin/$BASE_REF origin/$HEAD_REF; then
           echo "Branches $BASE_REF and $HEAD_REF do not have a common ancestor."
-          exit 1
+          # Handle the case where there is no common ancestor
+          git diff --name-only origin/$BASE_REF origin/$HEAD_REF -- '*.py' > modified_files.txt
+        else
+          git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
         fi
-        
-        git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
 
     - name: Check formatting with Black
       run: |
