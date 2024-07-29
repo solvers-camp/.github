@@ -33,7 +33,7 @@ jobs:
         if [ -s modified_files.txt ]; then
           xargs black --check < modified_files.txt
         else
-          echo "No Python files modified."
+          echo "No Python files modified"
         fi
 
     - name: Lint with Ruff
@@ -41,5 +41,5 @@ jobs:
         if [ -s modified_files.txt ]; then
           xargs ruff check < modified_files.txt
         else
-          echo "No Python files modified."
+          echo "No Python files modified"
         fi
