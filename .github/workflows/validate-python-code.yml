@@ -58,27 +58,6 @@ jobs:
         echo "Modified files:"
         cat modified_files.txt
 
-    # - name: Check current directory
-    #   run: |
-    #     echo "Current directory:"
-    #     pwd
-    #     echo "Files in current directory:"
-    #     ls -la
-
-    - name: Lint with Ruff
-      run: |
-        if [ -s modified_files.txt ]; then
-          while IFS= read -r file; do
-            if [ -f "$file" ]; then
-              ruff check "$file"
-            else
-              echo "File $file does not exist."
-            fi
-          done < modified_files.txt
-        else
-          echo "No Python files modified"
-        fi    
-
     - name: Check formatting with Black
       run: |
         if [ -s modified_files.txt ]; then
@@ -93,16 +72,16 @@ jobs:
           echo "No Python files modified"
         fi
 
-    # - name: Lint with Ruff
-    #   run: |
-    #     if [ -s modified_files.txt ]; then
-    #       while IFS= read -r file; do
-    #         if [ -f "$file" ]; then
-    #           ruff check "$file"
-    #         else
-    #           echo "File $file does not exist."
-    #         fi
-    #       done < modified_files.txt
-    #     else
-    #       echo "No Python files modified"
-    #     fi
+    - name: Lint with Ruff
+      run: |
+        if [ -s modified_files.txt ]; then
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              ruff check "$file"
+            else
+              echo "File $file does not exist."
+            fi
+          done < modified_files.txt
+        else
+          echo "No Python files modified"
+        fi
