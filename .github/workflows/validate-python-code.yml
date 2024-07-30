@@ -2,6 +2,13 @@ name: Validate python code using black and ruff
 
 on:
   workflow_call:
+    inputs:
+      base_ref:
+        required: true
+        type: string
+      head_ref:
+        required: true
+        type: string
 
 jobs:
   lint-and-format:
@@ -23,8 +30,8 @@ jobs:
     - name: Get list of modified Python files
       id: git_diff
       run: |
-        BASE_REF=${{ github.event.pull_request.base.ref }}
-        HEAD_REF=${{ github.event.pull_request.head.ref }}
+        BASE_REF=${{ inputs.base_ref }}
+        HEAD_REF=${{ inputs.head_ref }}
 
         echo "Base ref: $BASE_REF"
         echo "Head ref: $HEAD_REF"
