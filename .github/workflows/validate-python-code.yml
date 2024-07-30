@@ -25,6 +25,9 @@ jobs:
       run: |
         BASE_REF=${{ github.event.pull_request.base.ref }}
         HEAD_REF=${{ github.event.pull_request.head.ref }}
+
+        echo "Base ref: $BASE_REF"
+        echo "Head ref: $HEAD_REF"
         
         if [ -z "$BASE_REF" ] || [ -z "$HEAD_REF" ]; then
           echo "Base and head refs must be specified."
