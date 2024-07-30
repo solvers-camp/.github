@@ -23,8 +23,8 @@ jobs:
     - name: Get list of modified Python files
       id: git_diff
       run: |
-        BASE_REF=${{ GITHUB_BASE_REF }}
-        HEAD_REF=${{ GITHUB_REF }}
+        BASE_REF=${{ github.event.pull_request.base.ref }}
+        HEAD_REF=${{ github.event.pull_request.head.ref }}
         
         if [ -z "$BASE_REF" ] || [ -z "$HEAD_REF" ]; then
           echo "Base and head refs must be specified."
