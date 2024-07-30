@@ -11,7 +11,7 @@ on:
       head_ref:
         description: 'The head branch to compare'
         required: true
-        default: 'black_and-ruff'
+        default: 'black_and_ruff'
         type: string
 
 jobs:
