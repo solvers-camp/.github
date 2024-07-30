@@ -43,8 +43,14 @@ jobs:
         git fetch origin $BASE_REF --depth=1
         git fetch origin $HEAD_REF --depth=1
 
+        # Ensure the working directory is clean
+        git reset --hard
+
+        # Checkout the base ref
+        git checkout $BASE_REF
+
         # Use Darker to get the list of modified Python files
-        darker --revision $BASE_REF..$HEAD_REF '**/*.py' --diff > modified_files.txt
+        darker --revision $BASE_REF..$HEAD_REF . --diff > modified_files.txt
 
     - name: Check contents of modified_files.txt
       run: |
