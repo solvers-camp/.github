@@ -44,7 +44,7 @@ jobs:
         git fetch origin $HEAD_REF --depth=1
 
         # Use Darker to get the list of modified Python files
-        darker --revision $BASE_REF..$HEAD_REF . --diff > modified_files.txt
+    darker --revision $BASE_REF..$HEAD_REF '**/*.py' --diff > modified_files.txt
 
     - name: Check contents of modified_files.txt
       run: |
