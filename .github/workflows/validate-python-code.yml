@@ -55,6 +55,7 @@ jobs:
           # Format only the modified lines in the Python files and any new Python files
           for file in $MODIFIED_FILES; do
             if [ -f "$file" ]; then
+              echo "Formatting $file with Darker"
               darker --revision $BASE_REF --lint black "$file" || true
             else
               echo "File $file does not exist."
@@ -81,6 +82,7 @@ jobs:
           echo "$MODIFIED_FILES"
           for file in $MODIFIED_FILES; do
             if [ -f "$file" ]; then
+              echo "Linting $file with Ruff"
               ruff check "$file" || true
             else
               echo "File $file does not exist."
