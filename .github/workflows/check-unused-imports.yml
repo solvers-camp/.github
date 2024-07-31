@@ -16,12 +16,10 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: 3.11
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pylint
-          
       - name: Analysing the code with pylint
         run: | 
           pylint_files=$(git ls-files *.py src/migration-scripts)
@@ -35,11 +33,15 @@ jobs:
           else
             formatted_output=$(echo "$output" | jq -r '.[] | "\(.type): \(.message) in \(.path):\(.line)"')
             echo "$formatted_output"
-            formatted_env_output=$(echo "$formatted_output" | tr '\n' '. ')
-            echo "error_message=${formatted_env_output}" >> $GITHUB_ENV
+            echo "error_message<<EOF" >> $GITHUB_ENV
+            echo "$formatted_output" | while IFS= read -r line; do
+              echo "$line"
+            done >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          
             exit 1
           fi
-
+           
       - name: Add PR comment
         if: always()
         uses: mshick/add-pr-comment@v2
@@ -48,4 +50,4 @@ jobs:
             ${{ env.error_message == 'No issues in unused-imports' && '👍' || '❌' }}
             ${{ env.error_message }}
           message-id: "UNUSED_IMPORTS_VALIDATION"
-          allow-repeats: false
+          allow-repeats: false  
