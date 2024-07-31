@@ -60,8 +60,6 @@ jobs:
               # Check if there are any black formatting errors
               if echo "$darker_output" | grep -q "would reformat"; then
                 echo "Black formatting error in file: $file"
-              else
-                echo "All checks passed for $file!"
               fi
             else
               echo "File $file does not exist."
@@ -70,7 +68,7 @@ jobs:
         else
           echo "No Python files modified"
         fi
-        
+
     - name: Lint with Ruff
       run: |
         BASE_REF=${{ inputs.base_ref }}
