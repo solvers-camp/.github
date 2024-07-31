@@ -40,14 +40,15 @@ jobs:
           exit 1
         fi
         
-        git fetch origin $BASE_REF --depth=1
-        git fetch origin $HEAD_REF --depth=1
-        git checkout $HEAD_REF
+        git fetch origin $BASE_REF --depth=1 || { echo "Failed to fetch base ref $BASE_REF"; exit 1; }
+        git fetch origin $HEAD_REF --depth=1 || { echo "Failed to fetch head ref $HEAD_REF"; exit 1; }
+        git checkout $HEAD_REF || { echo "Failed to checkout head ref $HEAD_REF"; exit 1; }
 
     - name: Format and check with Darker
       run: |
         BASE_REF=${{ inputs.base_ref }}
-        darker . --revision origin/$BASE_REF --diff --check > darker_diff.txt
+        echo "Running darker with base ref: origin/$BASE_REF"
+        darker . --revision origin/$BASE_REF --diff --check > darker_diff.txt || { echo "Darker failed"; cat darker_diff.txt; exit 1; }
 
     - name: Check contents of darker_diff.txt
       run: |
