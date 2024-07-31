@@ -1,4 +1,4 @@
-name: Validate python code using darker and ruff
+name: Validate python code using black and ruff
 
 on:
   workflow_call:
@@ -17,8 +17,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        fetch-depth: 0  # Fetch all history for all branches
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -27,9 +25,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install darker ruff black
+        pip install black ruff
 
-    - name: Format with Darker
+    - name: Get list of modified Python files
+      id: git_diff
       run: |
         BASE_REF=${{ inputs.base_ref }}
         HEAD_REF=${{ inputs.head_ref }}
@@ -42,32 +41,22 @@ jobs:
           exit 1
         fi
         
-        git fetch origin $BASE_REF:$BASE_REF --depth=1
-        git fetch origin $HEAD_REF:$HEAD_REF --depth=1
+        git fetch origin $BASE_REF --depth=1
+        git fetch origin $HEAD_REF --depth=1
 
-        # Get the list of modified and newly added Python files
-        MODIFIED_FILES=$(git diff --name-only $BASE_REF $HEAD_REF -- '*.py')
-
-        if [ -n "$MODIFIED_FILES" ]; then
-          echo "Modified Python files:"
-          echo "$MODIFIED_FILES"
-          # Format only the modified lines in the Python files and any new Python files
-          for file in $MODIFIED_FILES; do
-            if [ -f "$file" ]; then
-              echo "Formatting $file with Darker"
-              darker_output=$(darker --revision $BASE_REF --lint black "$file" 2>&1 || true)
-              echo "$darker_output"
-              # Check if there are any black formatting errors
-              if echo "$darker_output" | grep -q "would reformat"; then
-                echo "Black formatting error in file: $file"
-              fi
-            else
-              echo "File $file does not exist."
-            fi
-          done
+        # Check if branches have a common ancestor
+        if ! git merge-base --is-ancestor origin/$BASE_REF origin/$HEAD_REF; then
+          echo "Branches $BASE_REF and $HEAD_REF do not have a common ancestor."
+          # Handle the case where there is no common ancestor
+          git diff --name-only origin/$BASE_REF origin/$HEAD_REF -- '*.py' > modified_files.txt
         else
-          echo "No Python files modified"
+          git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
         fi
+
+    - name: Check contents of modified_files.txt
+      run: |
+        echo "Modified files:"
+        cat modified_files.txt
 
     - name: Check formatting with Black
       id: black_check
@@ -75,49 +64,49 @@ jobs:
         if [ -s modified_files.txt ]; then
           while IFS= read -r file; do
             if [ -f "$file" ]; then
-              echo "Checking formatting for $file with Black"
-              black_output=$(black --check "$file" 2>&1 || true)
-              echo "$black_output"
-              if echo "$black_output" | grep -q "would reformat"; then
-                echo "Black formatting error in file: $file"
-              else
-                echo "All checks passed for $file!"
-              fi
+              black --check "$file" || true
             else
               echo "File $file does not exist."
             fi
           done < modified_files.txt
         else
           echo "No Python files modified"
-        fi    
+        fi
 
     - name: Lint with Ruff
+      id: ruff_check
       run: |
-        BASE_REF=${{ inputs.base_ref }}
-        HEAD_REF=${{ inputs.head_ref }}
-
-        git fetch origin $BASE_REF:$BASE_REF --depth=1
-        git fetch origin $HEAD_REF:$HEAD_REF --depth=1
-
-        # Get the list of modified and newly added Python files
-        MODIFIED_FILES=$(git diff --name-only $BASE_REF $HEAD_REF -- '*.py')
-
-        if [ -n "$MODIFIED_FILES" ]; then
-          echo "Modified Python files:"
-          echo "$MODIFIED_FILES"
-          for file in $MODIFIED_FILES; do
+        if [ -s modified_files.txt ]; then
+          while IFS= read -r file; do
             if [ -f "$file" ]; then
-              echo "Linting $file with Ruff"
-              ruff_output=$(ruff check "$file" 2>&1 || true)
-              echo "$ruff_output"
-              # Check if there are any ruff linting errors
-              if echo "$ruff_output" | grep -q "error"; then
-                echo "Ruff linting error in file: $file"
-              fi
+              ruff check "$file" || true
             else
               echo "File $file does not exist."
             fi
-          done
+          done < modified_files.txt
         else
           echo "No Python files modified"
         fi
+
+    # - name: Determine result
+    #   id: determine_result
+    #   run: |
+    #     BLACK_OUTPUT="${{ steps.black_check.outputs.stdout }}${{ steps.black_check.outputs.stderr }}"
+    #     RUFF_OUTPUT="${{ steps.ruff_check.outputs.stdout }}${{ steps.ruff_check.outputs.stderr }}"
+
+    #     if [ -z "$BLACK_OUTPUT" ] && [ -z "$RUFF_OUTPUT" ]; then
+    #       echo "no_issues=true" >> $GITHUB_ENV
+    #     else
+    #       echo "no_issues=false" >> $GITHUB_ENV
+    #     fi
+
+    # - name: Add PR comment with results
+    #   uses: mshick/add-pr-comment@v2
+    #   with:
+    #     repo-token: ${{ secrets.GITHUB_TOKEN }}
+    #     message: |
+    #       **Check formatting with Black:**
+    #       ${{ env.no_issues == 'true' && '👍' || '❌' }}
+
+    #       **Lint with Ruff:**
+    #       ${{ env.no_issues == 'true' && '👍' || '❌' }}    
