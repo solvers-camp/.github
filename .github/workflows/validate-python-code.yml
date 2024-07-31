@@ -58,6 +58,10 @@ jobs:
               echo "Formatting $file with Darker"
               darker_output=$(darker --revision $BASE_REF --lint black "$file" 2>&1)
               echo "$darker_output"
+              # Check if there are any black formatting errors
+              if echo "$darker_output" | grep -q "would reformat"; then
+                echo "Black formatting error in file: $file"
+              fi
             else
               echo "File $file does not exist."
             fi
