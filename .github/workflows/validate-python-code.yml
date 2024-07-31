@@ -69,6 +69,28 @@ jobs:
           echo "No Python files modified"
         fi
 
+    - name: Check formatting with Black
+      id: black_check
+      run: |
+        if [ -s modified_files.txt ]; then
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              echo "Checking formatting for $file with Black"
+              black_output=$(black --check "$file" 2>&1 || true)
+              echo "$black_output"
+              if echo "$black_output" | grep -q "would reformat"; then
+                echo "Black formatting error in file: $file"
+              else
+                echo "All checks passed for $file!"
+              fi
+            else
+              echo "File $file does not exist."
+            fi
+          done < modified_files.txt
+        else
+          echo "No Python files modified"
+        fi    
+
     - name: Lint with Ruff
       run: |
         BASE_REF=${{ inputs.base_ref }}
