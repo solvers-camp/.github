@@ -44,6 +44,14 @@ jobs:
         git fetch origin $HEAD_REF --depth=1 || { echo "Failed to fetch head ref $HEAD_REF"; exit 1; }
         git checkout $HEAD_REF || { echo "Failed to checkout head ref $HEAD_REF"; exit 1; }
 
+    - name: Validate base ref
+      run: |
+        BASE_REF=${{ inputs.base_ref }}
+        if ! git rev-parse --verify origin/$BASE_REF; then
+          echo "Base ref origin/$BASE_REF is not a valid reference."
+          exit 1
+        fi
+
     - name: Format and check with Darker
       run: |
         BASE_REF=${{ inputs.base_ref }}
