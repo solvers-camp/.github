@@ -1,4 +1,4 @@
-name: Validate python code using black and ruff
+name: Validate python code using darker and ruff
 
 on:
   workflow_call:
@@ -25,9 +25,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install black ruff
+        pip install darker ruff
 
-    - name: Get list of modified Python files
+    - name: Format with Darker
       run: |
         BASE_REF=${{ inputs.base_ref }}
         HEAD_REF=${{ inputs.head_ref }}
@@ -43,26 +43,28 @@ jobs:
         git fetch origin $BASE_REF --depth=1
         git fetch origin $HEAD_REF --depth=1
 
-    - name: Check contents of modified_files.txt
-      run: |
-        echo "Modified files:"
-        cat modified_files.txt
-
-    - name: Format with Darker
-      uses: akaihola/darker-action@v1
-      with:
-        args: .
+        # Format only the modified lines in the Python files and any new Python files
+        darker --revision $BASE_REF .
 
     - name: Lint with Ruff
       run: |
-        if [ -s modified_files.txt ]; then
-          while IFS= read -r file; do
+        BASE_REF=${{ inputs.base_ref }}
+        HEAD_REF=${{ inputs.head_ref }}
+
+        git fetch origin $BASE_REF --depth=1
+        git fetch origin $HEAD_REF --depth=1
+
+        # Get the list of modified and newly added Python files
+        MODIFIED_FILES=$(git diff --name-only $BASE_REF $HEAD_REF -- '*.py')
+
+        if [ -n "$MODIFIED_FILES" ]; then
+          for file in $MODIFIED_FILES; do
             if [ -f "$file" ]; then
               ruff check "$file" || true
             else
               echo "File $file does not exist."
             fi
-          done < modified_files.txt
+          done
         else
           echo "No Python files modified"
         fi
