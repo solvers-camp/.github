@@ -81,7 +81,7 @@ jobs:
         else
           echo "No Python files modified"
         fi
-
+        
     - name: Determine result
       id: determine_result
       run: |
@@ -96,6 +96,7 @@ jobs:
       uses: mshick/add-pr-comment@v2
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        message: ${{ env.no_issues == 'true' && '👍\nNo Formatting/Linting issue found in python files' || '❌\nIssues found in formatting/linting' }}
+        message: |
+          ${{ env.no_issues == 'true' && '👍\nNo Formatting/Linting issue found in python files' || '❌\nIssues found in formatting/linting' }}
         message-id: "FORMATTING_VALIDATION"
         allow-repeats: false
