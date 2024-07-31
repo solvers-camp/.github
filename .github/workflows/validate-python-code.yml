@@ -61,6 +61,7 @@ jobs:
               # Check if there are any black formatting errors
               if echo "$darker_output" | grep -q "would reformat"; then
                 echo "Black formatting error in file: $file"
+                exit 1
               fi
             else
               echo "File $file does not exist."
@@ -90,6 +91,11 @@ jobs:
               echo "Linting $file with Ruff"
               ruff_output=$(ruff check "$file" 2>&1)
               echo "$ruff_output"
+              # Check if there are any ruff linting errors
+              if echo "$ruff_output" | grep -q "error"; then
+                echo "Ruff linting error in file: $file"
+                exit 1
+              fi
             else
               echo "File $file does not exist."
             fi
