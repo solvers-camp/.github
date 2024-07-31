@@ -47,7 +47,7 @@ jobs:
     - name: Format and check with Darker
       run: |
         BASE_REF=${{ inputs.base_ref }}
-        darker . --revision $BASE_REF --diff --check > darker_diff.txt
+        darker . --revision origin/$BASE_REF --diff --check > darker_diff.txt
 
     - name: Check contents of darker_diff.txt
       run: |
@@ -57,7 +57,7 @@ jobs:
     - name: Lint with Ruff
       run: |
         BASE_REF=${{ inputs.base_ref }}
-        darker . --revision $BASE_REF --diff --check | grep '^--- ' | awk '{print $2}' > modified_files.txt
+        darker . --revision origin/$BASE_REF --diff --check | grep '^--- ' | awk '{print $2}' > modified_files.txt
 
         if [ -s modified_files.txt ]; then
           while IFS= read -r file; do
