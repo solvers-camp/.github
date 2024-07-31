@@ -64,7 +64,10 @@ jobs:
         if [ -s modified_files.txt ]; then
           while IFS= read -r file; do
             if [ -f "$file" ]; then
-              black --check "$file" || true
+              black --check "$file"
+              if [ $? -ne 0 ]; then
+                echo "black_failed=true" >> $GITHUB_ENV
+              fi
             else
               echo "File $file does not exist."
             fi
@@ -79,7 +82,10 @@ jobs:
         if [ -s modified_files.txt ]; then
           while IFS= read -r file; do
             if [ -f "$file" ]; then
-              ruff check "$file" || true
+              ruff check "$file"
+              if [ $? -ne 0 ]; then
+                echo "ruff_failed=true" >> $GITHUB_ENV
+              fi
             else
               echo "File $file does not exist."
             fi
@@ -91,22 +97,18 @@ jobs:
     - name: Determine result
       id: determine_result
       run: |
-        BLACK_OUTPUT="${{ steps.black_check.outputs.stdout }}${{ steps.black_check.outputs.stderr }}"
-        RUFF_OUTPUT="${{ steps.ruff_check.outputs.stdout }}${{ steps.ruff_check.outputs.stderr }}"
-
-        if [ -z "$BLACK_OUTPUT" ] && [ -z "$RUFF_OUTPUT" ]; then
-          echo "no_issues=true" >> $GITHUB_ENV
-        else
+        if [ "${{ env.black_failed }}" == "true" ] || [ "${{ env.ruff_failed }}" == "true" ]; then
           echo "no_issues=false" >> $GITHUB_ENV
+        else
+          echo "no_issues=true" >> $GITHUB_ENV
         fi
 
     - name: Add PR comment with results
+      if: always()
       uses: mshick/add-pr-comment@v2
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        message: |
-          **Check formatting with Black:**
-          ${{ env.no_issues == 'true' && '👍' || '❌' }}
-
-          **Lint with Ruff:**
-          ${{ env.no_issues == 'true' && '👍' || '❌' }}    
+        message: |-
+          ${{ env.no_issues == 'true' && '👍 No Formatting/Linting issue found in python files' || '❌ Issues found in formatting/linting' }}
+        message-id: "FORMATTING_VALIDATION"
+        allow-repeats: false
