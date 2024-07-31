@@ -17,6 +17,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # Fetch all history for all branches
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -40,8 +42,8 @@ jobs:
           exit 1
         fi
         
-        git fetch origin $BASE_REF --depth=1
-        git fetch origin $HEAD_REF --depth=1
+        git fetch origin $BASE_REF:$BASE_REF --depth=1
+        git fetch origin $HEAD_REF:$HEAD_REF --depth=1
 
         # Format only the modified lines in the Python files and any new Python files
         darker --revision $BASE_REF .
@@ -51,8 +53,8 @@ jobs:
         BASE_REF=${{ inputs.base_ref }}
         HEAD_REF=${{ inputs.head_ref }}
 
-        git fetch origin $BASE_REF --depth=1
-        git fetch origin $HEAD_REF --depth=1
+        git fetch origin $BASE_REF:$BASE_REF --depth=1
+        git fetch origin $HEAD_REF:$HEAD_REF --depth=1
 
         # Get the list of modified and newly added Python files
         MODIFIED_FILES=$(git diff --name-only $BASE_REF $HEAD_REF -- '*.py')
