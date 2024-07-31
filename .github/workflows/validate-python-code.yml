@@ -27,7 +27,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install darker ruff
+        pip install darker ruff black
 
     - name: Format with Darker
       run: |
@@ -45,8 +45,17 @@ jobs:
         git fetch origin $BASE_REF:$BASE_REF --depth=1
         git fetch origin $HEAD_REF:$HEAD_REF --depth=1
 
-        # Format only the modified lines in the Python files and any new Python files
-        darker --revision $BASE_REF .
+        # Get the list of modified and newly added Python files
+        MODIFIED_FILES=$(git diff --name-only $BASE_REF $HEAD_REF -- '*.py')
+
+        if [ -n "$MODIFIED_FILES" ]; then
+          echo "Modified Python files:"
+          echo "$MODIFIED_FILES"
+          # Format only the modified lines in the Python files and any new Python files
+          darker --revision $BASE_REF --lint black .
+        else:
+          echo "No Python files modified"
+        fi
 
     - name: Lint with Ruff
       run: |
@@ -60,13 +69,15 @@ jobs:
         MODIFIED_FILES=$(git diff --name-only $BASE_REF $HEAD_REF -- '*.py')
 
         if [ -n "$MODIFIED_FILES" ]; then
+          echo "Modified Python files:"
+          echo "$MODIFIED_FILES"
           for file in $MODIFIED_FILES; do
             if [ -f "$file" ]; then
               ruff check "$file" || true
-            else
+            else:
               echo "File $file does not exist."
             fi
           done
-        else
+        else:
           echo "No Python files modified"
         fi
