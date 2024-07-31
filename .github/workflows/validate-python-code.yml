@@ -25,9 +25,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install ruff
+        pip install black ruff darker
 
-    - name: Get list of modified Python files
+    - name: Get list of modified Python files and format with Darker
       run: |
         BASE_REF=${{ inputs.base_ref }}
         HEAD_REF=${{ inputs.head_ref }}
@@ -42,18 +42,18 @@ jobs:
         
         git fetch origin $BASE_REF --depth=1
         git fetch origin $HEAD_REF --depth=1
+        git checkout $HEAD_REF
+
+        # Get the list of modified Python files and format them
+        darker $BASE_REF $HEAD_REF --diff --check > modified_files.txt
 
     - name: Check contents of modified_files.txt
       run: |
         echo "Modified files:"
         cat modified_files.txt
 
-    - name: Format with Darker
-      uses: akaihola/darker-action@v1
-      with:
-        args: .    
-
     - name: Lint with Ruff
+      id: ruff_check
       run: |
         if [ -s modified_files.txt ]; then
           while IFS= read -r file; do
