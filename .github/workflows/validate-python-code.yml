@@ -88,25 +88,25 @@ jobs:
           echo "No Python files modified"
         fi
 
-    # - name: Determine result
-    #   id: determine_result
-    #   run: |
-    #     BLACK_OUTPUT="${{ steps.black_check.outputs.stdout }}${{ steps.black_check.outputs.stderr }}"
-    #     RUFF_OUTPUT="${{ steps.ruff_check.outputs.stdout }}${{ steps.ruff_check.outputs.stderr }}"
+    - name: Determine result
+      id: determine_result
+      run: |
+        BLACK_OUTPUT="${{ steps.black_check.outputs.stdout }}${{ steps.black_check.outputs.stderr }}"
+        RUFF_OUTPUT="${{ steps.ruff_check.outputs.stdout }}${{ steps.ruff_check.outputs.stderr }}"
 
-    #     if [ -z "$BLACK_OUTPUT" ] && [ -z "$RUFF_OUTPUT" ]; then
-    #       echo "no_issues=true" >> $GITHUB_ENV
-    #     else
-    #       echo "no_issues=false" >> $GITHUB_ENV
-    #     fi
+        if [ -z "$BLACK_OUTPUT" ] && [ -z "$RUFF_OUTPUT" ]; then
+          echo "no_issues=true" >> $GITHUB_ENV
+        else
+          echo "no_issues=false" >> $GITHUB_ENV
+        fi
 
-    # - name: Add PR comment with results
-    #   uses: mshick/add-pr-comment@v2
-    #   with:
-    #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-    #     message: |
-    #       **Check formatting with Black:**
-    #       ${{ env.no_issues == 'true' && '👍' || '❌' }}
+    - name: Add PR comment with results
+      uses: mshick/add-pr-comment@v2
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        message: |
+          **Check formatting with Black:**
+          ${{ env.no_issues == 'true' && '👍' || '❌' }}
 
-    #       **Lint with Ruff:**
-    #       ${{ env.no_issues == 'true' && '👍' || '❌' }}    
+          **Lint with Ruff:**
+          ${{ env.no_issues == 'true' && '👍' || '❌' }}    
