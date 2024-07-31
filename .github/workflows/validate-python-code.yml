@@ -1,4 +1,4 @@
-name: Validate python code using black and ruff
+name: Validate python code using darker and ruff
 
 on:
   workflow_call:
@@ -27,7 +27,7 @@ jobs:
       run: |
         pip install black ruff darker
 
-    - name: Get list of modified Python files and format with Darker
+    - name: Fetch branches and checkout head_ref
       run: |
         BASE_REF=${{ inputs.base_ref }}
         HEAD_REF=${{ inputs.head_ref }}
@@ -44,17 +44,21 @@ jobs:
         git fetch origin $HEAD_REF --depth=1
         git checkout $HEAD_REF
 
-        # Get the list of modified Python files and format them
-        darker $BASE_REF $HEAD_REF --diff --check > modified_files.txt
-
-    - name: Check contents of modified_files.txt
+    - name: Format and check with Darker
       run: |
-        echo "Modified files:"
-        cat modified_files.txt
+        BASE_REF=${{ inputs.base_ref }}
+        darker . --revision $BASE_REF --diff --check > darker_diff.txt
+
+    - name: Check contents of darker_diff.txt
+      run: |
+        echo "Darker diff:"
+        cat darker_diff.txt
 
     - name: Lint with Ruff
-      id: ruff_check
       run: |
+        BASE_REF=${{ inputs.base_ref }}
+        darker . --revision $BASE_REF --diff --check | grep '^--- ' | awk '{print $2}' > modified_files.txt
+
         if [ -s modified_files.txt ]; then
           while IFS= read -r file; do
             if [ -f "$file" ]; then
