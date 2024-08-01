@@ -81,13 +81,20 @@ jobs:
         else
           echo "No Python files modified"
         fi
+    - name: Get job ID
+      id: get_job_id
+      run: |
+        job_id=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs \
+          | jq -r '.jobs[] | select(.name=="${{ github.job }}") | .id')
+        echo "job_id=$job_id" >> $GITHUB_ENV
 
     - name: Determine result
       id: determine_result
       run: |
         if [ "${{ env.black_failed }}" == "true" ] || [ "${{ env.ruff_failed }}" == "true" ]; then
           echo "no_issues=false" >> $GITHUB_ENV
-          echo "error_message=Issues found in formatting/linting. ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs/${GITHUB_JOB}" >> $GITHUB_ENV        
+          echo "error_message=Issues found in formatting/linting. ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs/${{ env.job_id }}" >> $GITHUB_ENV
         else
           echo "no_issues=true" >> $GITHUB_ENV
           echo "error_message=No Formatting/Linting issue found in python files" >> $GITHUB_ENV
