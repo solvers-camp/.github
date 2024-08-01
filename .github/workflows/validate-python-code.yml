@@ -51,6 +51,7 @@ jobs:
           git diff --name-only origin/$BASE_REF origin/$HEAD_REF -- '*.py' > modified_files.txt
         else
           git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
+        fi  
 
     - name: Check contents of modified_files.txt
       run: |
