@@ -82,12 +82,6 @@ jobs:
           echo "No Python files modified"
         fi
 
-    - name: List modified files
-      id: list_modified_files
-      run: |
-        MODIFIED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-        echo "modified_files=$MODIFIED_FILES" >> $GITHUB_ENV
-
     - name: Determine result
       id: determine_result
       run: |
@@ -107,7 +101,5 @@ jobs:
         message: |-
           ${{ env.no_issues == 'true' && '👍' || '❌' }}
           ${{ env.error_message }}
-          ${{ env.no_issues == 'false' && '**Modified Files:**\n' || '' }}
-          ${{ env.no_issues == 'false' && env.modified_files || '' }}
         message-id: "FORMATTING_VALIDATION"
         allow-repeats: false
