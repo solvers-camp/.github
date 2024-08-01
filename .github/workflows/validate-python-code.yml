@@ -87,7 +87,8 @@ jobs:
       run: |
         if [ "${{ env.black_failed }}" == "true" ] || [ "${{ env.ruff_failed }}" == "true" ]; then
           echo "no_issues=false" >> $GITHUB_ENV
-          echo "error_message=Issues found in formatting/linting. ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs/${GITHUB_JOB}" >> $GITHUB_ENV        else
+          echo "error_message=Issues found in formatting/linting. ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs/${GITHUB_JOB}" >> $GITHUB_ENV        
+        else
           echo "no_issues=true" >> $GITHUB_ENV
           echo "error_message=No Formatting/Linting issue found in python files" >> $GITHUB_ENV
         fi
