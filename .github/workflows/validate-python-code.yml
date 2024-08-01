@@ -70,10 +70,10 @@ jobs:
               black_output=$(black --check "$file" 2>&1) || black_failed=true
               ruff_output=$(ruff check "$file" 2>&1) || ruff_failed=true
               if [ "$black_failed" = true ]; then
-                error_message="${error_message}\nBlack issues in $file:\n$black_output"
+                error_message="$error_message\nBlack issues in $file:\n$black_output"
               fi
               if [ "$ruff_failed" = true ]; then
-                error_message="${error_message}\nRuff issues in $file:\n$ruff_output"
+                error_message="$error_message\nRuff issues in $file:\n$ruff_output"
               fi
             else
               echo "File $file does not exist."
@@ -86,8 +86,7 @@ jobs:
             echo "ruff_failed=true" >> $GITHUB_ENV
           fi
           # Escape special characters in error_message
-          escaped_error_message=$(echo "$error_message" | jq -sRr @uri)
-          echo "error_message=$escaped_error_message" >> $GITHUB_ENV
+          echo "error_message=$error_message" >> $GITHUB_ENV
         else
           echo "No Python files modified"
           echo "error_message=No Formatting/Linting issue found in python files." >> $GITHUB_ENV
