@@ -88,12 +88,12 @@ jobs:
           # Escape the error_message for the environment file and replace problematic characters
           # escaped_error_message=$(echo "$error_message" | sed 's/%/%25/g; s/\n/%0A/g; s/\r/%0D/g; s/[^[:print:]]//g')
           # echo "error_message=$escaped_error_message" >> $GITHUB_ENV
-          # Encode the error_message using base64
-          encoded_error_message=$(echo "$error_message" | base64)
-          echo "error_message=$encoded_error_message" >> $GITHUB_ENV     
+          # Encode the error_message using URL encoding
+          encoded_error_message=$(python -c "import urllib.parse, sys; print(urllib.parse.quote(sys.stdin.read()))" <<< "$error_message")
+          echo "error_message=$encoded_error_message" >> $GITHUB_ENV
         else
           echo "No Python files modified"
-          echo "error_message=No Formatting/Linting issue found in python files." >> $GITHUB_ENV
+          echo "error_message=$(python -c "import urllib.parse; print(urllib.parse.quote('No Formatting/Linting issue found in python files.'))")" >> $GITHUB_ENV
         fi
         
     - name: Determine result
