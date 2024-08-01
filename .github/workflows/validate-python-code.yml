@@ -118,6 +118,6 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         message: |-
           ${{ env.no_issues == 'true' && '👍' || '❌' }}
-          ${{ env.error_message }}
+          $(python -c "import urllib.parse; print(urllib.parse.unquote('${{ env.error_message }}'))")
         message-id: "FORMATTING_VALIDATION"
         allow-repeats: false
