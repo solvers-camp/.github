@@ -67,8 +67,8 @@ jobs:
           error_message=""
           while IFS= read -r file; do
             if [ -f "$file" ]; then
-              black_output=$(black --check "$file" 2>&1 || black_failed=true
-              ruff_output=$(ruff check "$file" 2>&1 || ruff_failed=true
+              black_output=$(black --check "$file" 2>&1) || black_failed=true
+              ruff_output=$(ruff check "$file" 2>&1) || ruff_failed=true
               if [ "$black_failed" = true ]; then
                 error_message="$error_message\nBlack issues in $file:\n$black_output"
               fi
