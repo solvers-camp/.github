@@ -86,12 +86,13 @@ jobs:
             echo "ruff_failed=true" >> $GITHUB_ENV
           fi
           # Escape the error_message for the environment file
-          echo "error_message=$(echo "$error_message" | sed 's/%/%25/g; s/\n/%0A/g; s/\r/%0D/g')" >> $GITHUB_ENV
+          escaped_error_message=$(echo "$error_message" | sed 's/%/%25/g; s/\n/%0A/g; s/\r/%0D/g')
+          echo "error_message=$escaped_error_message" >> $GITHUB_ENV
         else
           echo "No Python files modified"
           echo "error_message=No Formatting/Linting issue found in python files." >> $GITHUB_ENV
-        fi  
-
+        fi
+        
     - name: Determine result
       id: determine_result
       run: |
