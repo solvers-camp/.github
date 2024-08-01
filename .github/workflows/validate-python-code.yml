@@ -51,7 +51,7 @@ jobs:
           git diff --name-only origin/$BASE_REF origin/$HEAD_REF -- '*.py' > modified_files.txt
         else
           git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
-        fi  
+        fi
 
     - name: Check contents of modified_files.txt
       run: |
@@ -64,17 +64,10 @@ jobs:
         if [ -s modified_files.txt ]; then
           black_failed=false
           ruff_failed=false
-          error_message=""
           while IFS= read -r file; do
             if [ -f "$file" ]; then
-              black_output=$(black --check "$file" 2>&1) || black_failed=true
-              ruff_output=$(ruff check "$file" 2>&1) || ruff_failed=true
-              if [ "$black_failed" = true ]; then
-                error_message="$error_message\nBlack issues in $file:\n$black_output"
-              fi
-              if [ "$ruff_failed" = true ]; then
-                error_message="$error_message\nRuff issues in $file:\n$ruff_output"
-              fi
+              black --check "$file" || black_failed=true
+              ruff check "$file" || ruff_failed=true
             else
               echo "File $file does not exist."
             fi
@@ -85,14 +78,10 @@ jobs:
           if [ "$ruff_failed" = true ]; then
             echo "ruff_failed=true" >> $GITHUB_ENV
           fi
-          # Escape special characters in error_message
-          escaped_error_message=$(echo "$error_message" | sed 's/%/%25/g; s/\n/%0A/g; s/\r/%0D/g')
-          echo "error_message=$escaped_error_message" >> $GITHUB_ENV
         else
           echo "No Python files modified"
-          echo "error_message=No Formatting/Linting issue found in python files." >> $GITHUB_ENV
         fi
-        
+
     - name: Determine result
       id: determine_result
       run: |
@@ -100,7 +89,7 @@ jobs:
           echo "no_issues=false" >> $GITHUB_ENV
         else
           echo "no_issues=true" >> $GITHUB_ENV
-        fi    
+        fi
 
     - name: Add PR comment with results
       if: always()
@@ -108,7 +97,6 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         message: |-
-          ${{ env.no_issues == 'true' && '👍' || '❌' }}
-          ${{ env.error_message }}
+          ${{ env.no_issues == 'true' && '👍 No Formatting/Linting issue found in python files' || '❌ Issues found in formatting/linting' }}
         message-id: "FORMATTING_VALIDATION"
         allow-repeats: false
