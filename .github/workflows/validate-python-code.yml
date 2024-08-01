@@ -64,6 +64,7 @@ jobs:
         if [ -s modified_files.txt ]; then
           black_failed=false
           ruff_failed=false
+          error_message=""
           while IFS= read -r file; do
             if [ -f "$file" ]; then
               black_output=$(black --check "$file" 2>&1) || black_failed=true
@@ -84,7 +85,9 @@ jobs:
           if [ "$ruff_failed" = true ]; then
             echo "ruff_failed=true" >> $GITHUB_ENV
           fi
-          echo "error_message=$error_message" >> $GITHUB_ENV
+          # Escape special characters in error_message
+          escaped_error_message=$(echo "$error_message" | jq -sRr @uri)
+          echo "error_message=$escaped_error_message" >> $GITHUB_ENV
         else
           echo "No Python files modified"
           echo "error_message=No Formatting/Linting issue found in python files." >> $GITHUB_ENV
