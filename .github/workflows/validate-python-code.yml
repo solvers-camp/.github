@@ -51,7 +51,6 @@ jobs:
           git diff --name-only origin/$BASE_REF origin/$HEAD_REF -- '*.py' > modified_files.txt
         else
           git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
-        fi
 
     - name: Check contents of modified_files.txt
       run: |
@@ -85,7 +84,8 @@ jobs:
           if [ "$ruff_failed" = true ]; then
             echo "ruff_failed=true" >> $GITHUB_ENV
           fi
-          echo "error_message=$error_message" >> $GITHUB_ENV
+          # Escape the error_message for the environment file
+          echo "error_message=$(echo "$error_message" | sed 's/%/%25/g; s/\n/%0A/g; s/\r/%0D/g')" >> $GITHUB_ENV
         else
           echo "No Python files modified"
           echo "error_message=No Formatting/Linting issue found in python files." >> $GITHUB_ENV
