@@ -103,7 +103,13 @@ jobs:
           echo "no_issues=false" >> $GITHUB_ENV
         else
           echo "no_issues=true" >> $GITHUB_ENV
-        fi    
+        fi  
+
+    - name: Display error message
+      if: always()
+      run: |
+        decoded_error_message=$(python -c "import urllib.parse, sys; print(urllib.parse.unquote(sys.stdin.read()))" <<< "${{ env.error_message }}")
+        echo -e "$decoded_error_message"      
 
     - name: Add PR comment with results
       if: always()
