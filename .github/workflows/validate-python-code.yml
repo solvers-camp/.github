@@ -109,6 +109,7 @@ jobs:
       if: always()
       run: |
         decoded_error_message=$(python -c "import urllib.parse, sys; print(urllib.parse.unquote(sys.stdin.read()))" <<< "${{ env.error_message }}")
+        echo "STEP 1"
         echo -e "$decoded_error_message"      
 
     - name: Add PR comment with results
@@ -118,6 +119,6 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         message: |-
           ${{ env.no_issues == 'true' && '👍' || '❌' }}
-          $(python -c "import urllib.parse, sys; print(urllib.parse.unquote('${{ env.error_message }}'))")
+          $(python -c "import urllib.parse; print(urllib.parse.unquote('${{ env.error_message }}'))")
         message-id: "FORMATTING_VALIDATION"
         allow-repeats: false
