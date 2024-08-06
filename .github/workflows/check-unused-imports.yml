@@ -30,8 +30,11 @@ jobs:
           else
             formatted_output=$(echo "$output" | jq -r '.[] | "\(.type): \(.message) in \(.path):\(.line)"')
             echo "$formatted_output"
-            formatted_env_output=$(echo "$formatted_output" | tr '\n' '. ')
-            echo "error_message=${formatted_env_output}" >> $GITHUB_ENV
+            echo "error_message<<EOF" >> $GITHUB_ENV
+            echo "$formatted_output" | while IFS= read -r line; do
+              echo "$line"
+            done >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
             exit 1
           fi
            
