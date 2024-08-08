@@ -1,9 +1,14 @@
-name: Validate Python Code
+name: Validate python code using black and ruff
 
 on:
-  pull_request:
-    paths:
-      - '**/*.py'
+  workflow_call:
+    inputs:
+      base_ref:
+        required: true
+        type: string
+      head_ref:
+        required: true
+        type: string
 
 jobs:
   lint-and-format:
@@ -25,21 +30,76 @@ jobs:
     - name: Get list of modified Python files
       id: git_diff
       run: |
-        git fetch origin ${{ github.base_ref }} --depth=1
-        git diff --name-only origin/${{ github.base_ref }}...${{ github.head_ref }} -- '*.py' > modified_files.txt
+        BASE_REF=${{ inputs.base_ref }}
+        HEAD_REF=${{ inputs.head_ref }}
 
-    - name: Check formatting with Black
-      run: |
-        if [ -s modified_files.txt ]; then
-          xargs black --check < modified_files.txt
+        echo "Base ref: $BASE_REF"
+        echo "Head ref: $HEAD_REF"
+        
+        if [ -z "$BASE_REF" ] || [ -z "$HEAD_REF" ]; then
+          echo "Base and head refs must be specified."
+          exit 1
+        fi
+        
+        git fetch origin $BASE_REF --depth=1
+        git fetch origin $HEAD_REF --depth=1
+
+        # Check if branches have a common ancestor
+        if ! git merge-base --is-ancestor origin/$BASE_REF origin/$HEAD_REF; then
+          echo "Branches $BASE_REF and $HEAD_REF do not have a common ancestor."
+          # Handle the case where there is no common ancestor
+          git diff --name-only origin/$BASE_REF origin/$HEAD_REF -- '*.py' > modified_files.txt
         else
-          echo "No Python files modified."
+          git diff --name-only origin/$BASE_REF...origin/$HEAD_REF -- '*.py' > modified_files.txt
         fi
 
-    - name: Lint with Ruff
+    - name: Check contents of modified_files.txt
+      run: |
+        echo "Modified files:"
+        cat modified_files.txt
+
+    - name: Check formatting and linting
+      id: check_formatting_and_linting
       run: |
         if [ -s modified_files.txt ]; then
-          xargs ruff check < modified_files.txt
+          black_failed=false
+          ruff_failed=false
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              black --check "$file" || black_failed=true
+              ruff check "$file" || ruff_failed=true
+            else
+              echo "File $file does not exist."
+            fi
+          done < modified_files.txt
+          if [ "$black_failed" = true ]; then
+            echo "black_failed=true" >> $GITHUB_ENV
+          fi
+          if [ "$ruff_failed" = true ]; then
+            echo "ruff_failed=true" >> $GITHUB_ENV
+          fi
         else
-          echo "No Python files modified."
+          echo "No Python files modified"
         fi
+
+    - name: Determine result
+      id: determine_result
+      run: |
+        if [ "${{ env.black_failed }}" == "true" ] || [ "${{ env.ruff_failed }}" == "true" ]; then
+          echo "no_issues=false" >> $GITHUB_ENV
+          echo "error_message=Issues found in formatting/linting. ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" >> $GITHUB_ENV        
+        else
+          echo "no_issues=true" >> $GITHUB_ENV
+          echo "error_message=No Formatting/Linting issue found in python files" >> $GITHUB_ENV
+        fi
+
+    - name: Add PR comment with results
+      if: always()
+      uses: mshick/add-pr-comment@v2
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        message: |-
+          ${{ env.no_issues == 'true' && '👍' || '❌' }}
+          ${{ env.error_message }}
+        message-id: "FORMATTING_VALIDATION"
+        allow-repeats: false
