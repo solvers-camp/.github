@@ -54,7 +54,8 @@ jobs:
           else
             formatted_output=$(echo "$output" | jq -r '.[] | "\(.type): \(.message) in \(.path):\(.line)"')
             echo "$formatted_output"
-            formatted_env_output=$(echo "$formatted_output" | tr '\n' '. ')
+            # formatted_env_output=$(echo "$formatted_output" | tr '\n' '. ')
+            formatted_env_output=$(echo "$formatted_output" | tr '\n' ' ' | sed 's/"/\\"/g')
             echo "error_message=${formatted_env_output}" >> $GITHUB_ENV
             # exit 1            
             # echo "error_message<<EOF" >> $GITHUB_ENV
