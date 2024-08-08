@@ -4,7 +4,7 @@ on:
     outputs:
       error_message:
         description: 'Error message from Pylint check'
-        value: ${{ env.ERROR_MESSAGE }}
+        value: ${{ steps.set-error-message.outputs.error_message }}
 
 jobs:
   check-unused-imports:
@@ -40,6 +40,7 @@ jobs:
 
       - name: Check unused imports (pylint)
         if: steps.py-changes.outputs.src == 'true'
+        id: pylint-check
         run: |
           pylint_files=$(git ls-files *.py src/migration-scripts)
           set +e
@@ -62,7 +63,6 @@ jobs:
 
       - name: Set error message output
         id: set-error-message
-        run: echo "error_message=${{ env.error_message }}" >> $GITHUB_ENV
-        shell: bash
+        run: echo "${{ env.error_message }}" > $GITHUB_OUTPUT
         env:
-          error_message: ${{ steps.pylint-check.outputs.error_message }}        
+          error_message: ${{ env.error_message }}     
