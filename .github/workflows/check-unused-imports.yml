@@ -1,21 +1,46 @@
-name: Check for unused imports using Pylint 
+name: Check for unused imports using Pylint
 on:
   workflow_call:
+    outputs:
+      error_message:
+        description: 'Error message from Pylint check'
+        value: ${{ steps.set-error-message.outputs.error_message }}
+
 jobs:
   check-unused-imports:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout pull request head
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - uses: dorny/paths-filter@v3
+        id: py-changes
+        with:
+          filters: |
+            src:
+              - 'src/**'
+
       - name: Set up Python
+        if: steps.py-changes.outputs.src == 'true'
         uses: actions/setup-python@v3
         with:
           python-version: 3.11
+
       - name: Install dependencies
+        if: steps.py-changes.outputs.src == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install pylint
-      - name: Analysing the code with pylint
-        run: | 
+
+      - name: Check unused imports (pylint)
+        if: steps.py-changes.outputs.src == 'true'
+        run: |
           pylint_files=$(git ls-files *.py src/migration-scripts)
           set +e
           output=$(pylint --disable=all --enable=W0611 --output-format=json $pylint_files 2>&1)
@@ -25,7 +50,6 @@ jobs:
             echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
             echo "No issues in unused-imports"
           else
-
             formatted_output=$(echo "$output" | jq -r '.[] | "\(.type): \(.message) in \(.path):\(.line)"')
             echo "$formatted_output"
 
@@ -37,13 +61,7 @@ jobs:
           
             exit 1
           fi
-           
-      - name: Add PR comment
-        if: always()
-        uses: mshick/add-pr-comment@v2
-        with:
-          message: |-
-            ${{ env.error_message == 'No issues in unused-imports' && '👍' || '❌' }}
-            ${{ env.error_message }}
-          message-id: "UNUSED_IMPORTS_VALIDATION"
-          allow-repeats: false
+
+      - name: Set error message output
+        id: set-error-message
+        run: echo "error_message=${{ env.error_message }}" >> $GITHUB_ENV
