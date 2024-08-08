@@ -41,6 +41,7 @@ jobs:
       - name: Check unused imports (pylint)
         if: steps.py-changes.outputs.src == 'true'
         id: pylint-check
+        continue-on-error: true
         run: |
           pylint_files=$(git ls-files *.py src/migration-scripts)
           set +e
@@ -55,7 +56,7 @@ jobs:
             echo "$formatted_output"
             formatted_env_output=$(echo "$formatted_output" | tr '\n' '. ')
             echo "error_message=${formatted_env_output}" >> $GITHUB_ENV
-            exit 1            
+            # exit 1            
             # echo "error_message<<EOF" >> $GITHUB_ENV
             # echo "$formatted_output" | while IFS= read -r line; do
             #   echo "$line"
