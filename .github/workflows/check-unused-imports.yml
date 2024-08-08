@@ -66,6 +66,12 @@ jobs:
             # exit 1
           fi
 
+      - name: Write error message to temporary file
+        id: write-error-message
+        run: echo "${{ env.error_message }}" > error_message.txt
+        env:
+            error_message: ${{ env.error_message }}
+
       - name: Set error message output
         id: set-error-message
         run: echo "${{ env.error_message }}" > $GITHUB_OUTPUT
