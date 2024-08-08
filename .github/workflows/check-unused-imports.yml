@@ -4,7 +4,7 @@ on:
     outputs:
       error_message:
         description: 'Error message from Pylint check'
-        value: ${{ steps.set-error-message.outputs.error_message }}
+        value: ${{ env.ERROR_MESSAGE }}
 
 jobs:
   check-unused-imports:
