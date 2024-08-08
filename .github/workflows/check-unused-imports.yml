@@ -54,9 +54,10 @@ jobs:
           else
             formatted_output=$(echo "$output" | jq -r '.[] | "\(.type): \(.message) in \(.path):\(.line)"')
             echo "$formatted_output"
+            echo "$formatted_output" > pylint_output.txt
             # formatted_env_output=$(echo "$formatted_output" | tr '\n' '. ')
-            formatted_env_output=$(echo "$formatted_output" | tr '\n' ' ' | sed 's/"/\\"/g')
-            echo "error_message=${formatted_env_output}" >> $GITHUB_ENV
+            # formatted_env_output=$(echo "$formatted_output" | tr '\n' ' ' | sed 's/"/\\"/g')
+            # echo "error_message=${formatted_env_output}" >> $GITHUB_ENV
             # exit 1            
             # echo "error_message<<EOF" >> $GITHUB_ENV
             # echo "$formatted_output" | while IFS= read -r line; do
@@ -66,17 +67,24 @@ jobs:
             # exit 1
           fi
 
-      - name: Write error message to temporary file
-        id: write-error-message
-        run: echo "${{ env.error_message }}" > error_message.txt
-        env:
-            error_message: ${{ env.error_message }}
+      # - name: Write error message to temporary file
+      #   id: write-error-message
+      #   run: echo "${{ env.error_message }}" > error_message.txt
+      #   env:
+      #       error_message: ${{ env.error_message }}
 
       - name: Set error message output
         id: set-error-message
-        run: echo "${{ env.error_message }}" > $GITHUB_OUTPUT
-        env:
-          error_message: ${{ env.error_message }} 
+        run: |
+          error_message=$(cat pylint_output.txt)
+          echo "error_message=$error_message" >> $GITHUB_ENV
+          echo "error_message=$error_message" >> $GITHUB_OUTPUT
+
+      # - name: Set error message output
+      #   id: set-error-message
+      #   run: echo "${{ env.error_message }}" > $GITHUB_OUTPUT
+      #   env:
+      #     error_message: ${{ env.error_message }} 
 
     outputs:
       error_message: ${{ steps.set-error-message.outputs.error_message }}
