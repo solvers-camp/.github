@@ -4,7 +4,7 @@ on:
     outputs:
       error_message:
         description: 'Error message from Pylint check'
-        value: ${{ steps.set-error-message.outputs.error_message }}
+        value:  ${{ steps.set-error-message.outputs.error_message }}
 
 jobs:
   check-unused-imports:
@@ -63,6 +63,8 @@ jobs:
 
       - name: Set error message output
         id: set-error-message
-        run: echo "${{ env.error_message }}" > $GITHUB_OUTPUT
+        # run: echo "${{ env.error_message }}" > $GITHUB_OUTPUT
+        run: echo "::set-output name=error_message::${{ env.error_message }}"
+        # run: echo "error_message=${{ env.error_message }}" >> $GITHUB_ENV
         env:
           error_message: ${{ env.error_message }}     
