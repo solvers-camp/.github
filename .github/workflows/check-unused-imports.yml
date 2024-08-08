@@ -85,7 +85,7 @@ jobs:
 
       - name: Set error message output
         id: set-error-message
-        run: echo "${{ env.error_message }}" > $GITHUB_OUTPUT
+        run: echo "error_message=${{ env.error_message }}" >> $GITHUB_ENV
         env:
           error_message: ${{ env.error_message }} 
 
