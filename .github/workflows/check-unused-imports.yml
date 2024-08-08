@@ -63,3 +63,6 @@ jobs:
       - name: Set error message output
         id: set-error-message
         run: echo "error_message=${{ env.error_message }}" >> $GITHUB_ENV
+        shell: bash
+        env:
+          error_message: ${{ steps.pylint-check.outputs.error_message }}        
