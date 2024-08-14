@@ -1,0 +1,21 @@
+---
+    name: Lint Darker - Validate Python Code
+    
+    # on: [push, pull_request]
+    on:
+        workflow_call:
+
+    jobs:
+      darker-lint:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+            with:
+              fetch-depth: 0
+          - uses: actions/setup-python@v5
+          - uses: akaihola/darker@acb622567d1a26b0c6dcbb1b171c1c8340ee6c22
+            with:
+              options: "--check --diff --isort --color"
+              src: "."
+              version: "~=2.1.1"
+              lint: "flake8,pylint==2.13.1"
