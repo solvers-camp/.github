@@ -29,8 +29,7 @@
             run: |
               git fetch origin ${base_ref}:${base_ref}
     
-          - name: Lint Code with Darker
+          - name: Lint Code
             run: |
-              darker -r ${base_ref} --check --diff --lint "ruff check" --color .
-            #   darker -r ${base_ref} --check --diff --lint "ruff check" --color . 
-            #   darker -r ${base_ref} --check --diff --color --lint "ruff check" .
+              darker -r ${base_ref} --check --lint "ruff check" --color .
+            #   darker -r ${base_ref} --check --diff --lint "ruff check" --color .
