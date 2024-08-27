@@ -24,17 +24,6 @@
           - name: darker ruff install
             run: |
               pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292
-            #   echo "Install Darker..."
-            #   pip install git+https://github.com/akaihola/darker.git@master
-            #   echo "Install Ruff..."
-            #   pip install ruff>=0.0.292
-
-          - name: Verify Ruff Installation
-            run: |
-              echo "Checking Ruff version..."
-              ruff --version
-
-            #   pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292              
     
           - name: Fetch base branch
             run: |
@@ -43,10 +32,11 @@
           - name: Lint Code with Darker
             run: |
               echo "Running Darker..."
-              darker -r ${base_ref} --check --diff --color .
+              darker -r ${base_ref} --check --diff --color --lint "ruff check" .
+           #   darker -r ${base_ref} --check --diff --color .              
             continue-on-error: true
       
-        #   - name: Lint Code with Ruff
+        #   - name: Lint Code with Ruff - working
         #     run: |
         #       echo "Running Ruff..."
         #       CHANGED_FILES=$(git diff --name-only --diff-filter=ACMRT ${base_ref}...${{ github.event.pull_request.head.ref }} | grep '\.py$' || true)
@@ -57,12 +47,12 @@
         #       fi
         #     continue-on-error: true
                             
-          - name: Lint Code
-            continue-on-error: true
-            run: |
-              echo "Running Ruff..."
-              ruff check .            
-        #       echo "Running Darker..."
-        #       darker -r ${base_ref} --check --diff --color .
-            #   darker -r ${base_ref} --check --diff --lint "ruff check" --color . > lint_output.txt
-            #   cat lint_output.txt
+        #   - name: Lint Code - ALL files
+        #     continue-on-error: true
+        #     run: |
+        #       echo "Running Ruff..."
+        #       ruff check .            
+        # #       echo "Running Darker..."
+        # #       darker -r ${base_ref} --check --diff --color .
+        #     #   darker -r ${base_ref} --check --diff --lint "ruff check" --color . > lint_output.txt
+        #     #   cat lint_output.txt
