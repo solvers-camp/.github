@@ -1,11 +1,6 @@
-name: Check for unused imports using Pylint
+name: Check for unused imports using Pylint 
 on:
   workflow_call:
-    outputs:
-      error_message:
-        description: 'Error message from Pylint check'
-        value:  ${{ jobs.check-unused-imports.outputs.error_message }}
-
 jobs:
   check-unused-imports:
     runs-on: ubuntu-latest
@@ -13,12 +8,13 @@ jobs:
       pull-requests: write
       contents: read
     steps:
+
       - name: Checkout pull request head
         uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-
+      
       - uses: dorny/paths-filter@v3
         id: py-changes
         with:
@@ -31,7 +27,7 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: 3.11
-
+        
       - name: Install dependencies
         if: steps.py-changes.outputs.src == 'true'
         run: |
@@ -40,54 +36,26 @@ jobs:
 
       - name: Check unused imports (pylint)
         if: steps.py-changes.outputs.src == 'true'
-        id: pylint-check
-        continue-on-error: true
-        run: |
+        run: | 
           pylint_files=$(git ls-files *.py src/migration-scripts)
           set +e
-          output=$(pylint --disable=all --enable=W0611 --output-format=json $pylint_files 2>&1)
+          output=$(pylint --disable=all --enable=W0611 $pylint_files)
           exit_code=$?
           set -e
-          if [[ $exit_code -eq 0 ]]; then
-            echo "error_message=No issues in unused-imports" >> $GITHUB_ENV
-            echo "No issues in unused-imports"
-          else
-            formatted_output=$(echo "$output" | jq -r '.[] | "\(.type): \(.message) in \(.path):\(.line)"')
-            echo "$formatted_output"
-            echo "error_message=issues in unused-imports" >> $GITHUB_ENV
-            echo "issues found in unused-imports"  
-
-            # echo "$formatted_output" > pylint_output.txt
-            # formatted_env_output=$(echo "$formatted_output" | tr '\n' '. ')
-            # formatted_env_output=$(echo "$formatted_output" | tr '\n' ' ' | sed 's/"/\\"/g')
-            # echo "error_message=${formatted_env_output}" >> $GITHUB_ENV
-            # exit 1            
-            # echo "error_message<<EOF" >> $GITHUB_ENV
-            # echo "$formatted_output" | while IFS= read -r line; do
-            #   echo "$line"
-            # done >> $GITHUB_ENV
-            # echo "EOF" >> $GITHUB_ENV
-            # exit 1
+          echo "$output"
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          message=":white_check_mark: No issues found in *unused-imports* check."
+          if [[ $exit_code -ne 0 ]]; then
+            message=":x: Issues found in *unused-imports* check. "
           fi
+          echo "WORKFLOW_MESSAGE=${message}. Please refer the [workflow run]($run_url)" >> $GITHUB_ENV
+          exit $exit_code
 
-      # - name: Write error message to temporary file
-      #   id: write-error-message
-      #   run: echo "${{ env.error_message }}" > error_message.txt
-      #   env:
-      #       error_message: ${{ env.error_message }}
-
-      # - name: Set error message output
-      #   id: set-error-message
-      #   run: |
-      #     error_message=$(cat pylint_output.txt)
-      #     echo "error_message=$error_message" >> $GITHUB_ENV
-      #     echo "error_message=$error_message" >> $GITHUB_OUTPUT
-
-      - name: Set error message output
-        id: set-error-message
-        run: echo "error_message=${{ env.error_message }}" >> $GITHUB_ENV
-        env:
-          error_message: ${{ env.error_message }} 
-
-    outputs:
-      error_message: ${{ steps.set-error-message.outputs.error_message }}
+      - name: Add PR comment
+        if: ${{ always() && env.WORKFLOW_MESSAGE != '' }}
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |-
+            ${{ env.WORKFLOW_MESSAGE }}
+          message-id: "UNUSED_IMPORTS_VALIDATION"
+          allow-repeats: false
