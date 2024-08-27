@@ -31,6 +31,6 @@
     
           - name: Lint Code with Darker
             run: |
-              echo "Running Darker..."
-              darker -r ${base_ref} --check --diff --color --lint "ruff check" .
-            #   darker -r ${base_ref} --check --diff --lint "ruff check" --color .            continue-on-error: true
+              darker -r ${base_ref} --check --diff --lint "ruff check" --color .
+            #   darker -r ${base_ref} --check --diff --lint "ruff check" --color . 
+            #   darker -r ${base_ref} --check --diff --color --lint "ruff check" .
