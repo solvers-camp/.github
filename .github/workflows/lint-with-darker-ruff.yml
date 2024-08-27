@@ -28,6 +28,11 @@
               echo "Install Ruff..."
               pip install ruff>=0.0.292
 
+          - name: Verify Ruff Installation
+            run: |
+              echo "Checking Ruff version..."
+              ruff --version
+
             #   pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292              
     
           - name: Fetch base branch
