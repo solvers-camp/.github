@@ -23,7 +23,9 @@
     
           - name: darker ruff install
             run: |
+              echo "Install Darker..."
               pip install git+https://github.com/akaihola/darker.git@master
+              echo "Install Ruff..."
               pip install ruff>=0.0.292            
             #   pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292              
     
