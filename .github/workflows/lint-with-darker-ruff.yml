@@ -23,7 +23,9 @@
     
           - name: darker ruff install
             run: |
-              pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292
+              pip install git+https://github.com/akaihola/darker.git@master
+              pip install ruff>=0.0.292            
+            #   pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292              
     
           - name: Fetch base branch
             run: |
@@ -32,7 +34,9 @@
           - name: Lint Code
             continue-on-error: true
             run: |
+              echo "Running Darker..."
               darker -r ${base_ref} --check --diff --color .
+              echo "Running Ruff..."
               ruff check .            
             #   darker -r ${base_ref} --check --diff --lint "ruff check" --color . > lint_output.txt
             #   cat lint_output.txt
