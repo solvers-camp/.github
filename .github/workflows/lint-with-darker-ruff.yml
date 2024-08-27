@@ -31,4 +31,5 @@
     
           - name: Lint Code
             run: |
-              darker -r ${base_ref} --check --diff --lint "ruff check" --color .
+              darker -r ${base_ref} --check --diff --lint "ruff check" --color . > lint_output.txt
+              cat lint_output.txt
