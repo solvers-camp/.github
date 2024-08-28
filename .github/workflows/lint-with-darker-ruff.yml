@@ -27,6 +27,7 @@
     
           - name: Fetch base branch
             run: |
+              echo "Fetching base branch: ${base_ref}"
               git fetch origin ${base_ref}:refs/remotes/origin/${base_ref}            
             #   git fetch origin ${base_ref}:${base_ref}            
 
@@ -34,6 +35,11 @@
             run: |
               echo "Base ref: ${base_ref}"
               git branch -r
+
+          - name: Verify Base Branch
+            run: |
+              echo "Verifying base branch: refs/remotes/origin/${base_ref}"
+              git show-ref refs/remotes/origin/${base_ref}              
     
           - name: Lint Code
             run: |
