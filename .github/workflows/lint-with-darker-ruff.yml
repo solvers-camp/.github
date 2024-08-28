@@ -27,9 +27,12 @@
     
           - name: Fetch base branch
             run: |
-              git fetch origin ${base_ref}:${base_ref}
+              git fetch origin ${base_ref}:refs/remotes/origin/${base_ref}
+            #   git fetch origin ${base_ref}:${base_ref}
     
           - name: Lint Code
             run: |
-              darker -r ${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
+              darker -r origin/${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
+            #   darker -r ${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
             #   darker -r ${base_ref} --check --diff --lint "ruff check" --color .
+            # darker -r ${base_ref} --check --diff --lint "ruff check" --color . 2>&1 | tee /dev/tty | grep '\[ruff\]'
