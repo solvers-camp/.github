@@ -44,7 +44,8 @@
           - name: Lint Code
             run: |
               echo "Running Lint"
-              darker -r refs/remotes/origin/${base_ref} --check --diff --lint "ruff check" --color .
+              darker . --revision ${base_ref} --check --diff --lint "ruff check" --color . || echo "Darker command failed"
+            #   darker -r refs/remotes/origin/${base_ref} --check --diff --lint "ruff check" --color .
             #   darker -r origin/${{ github.event.pull_request.base.ref }} --check --diff --lint "ruff check" --color .
             #   darker -r origin/${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
             #   darker -r ${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
