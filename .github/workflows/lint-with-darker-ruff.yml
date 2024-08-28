@@ -30,7 +30,10 @@
               git fetch origin ${base_ref}:refs/remotes/origin/${base_ref}            
             #   git fetch origin ${base_ref}:${base_ref}            
 
-
+          - name: Debug Base Ref
+            run: |
+              echo "Base ref: ${base_ref}"
+              git branch -r
     
           - name: Lint Code
             run: |
