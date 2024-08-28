@@ -32,7 +32,8 @@
     
           - name: Lint Code
             run: |
-              darker -r origin/${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
+              darker -r origin/${base_ref} --check --diff --lint "ruff check" --color .
+            #   darker -r origin/${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
             #   darker -r ${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
             #   darker -r ${base_ref} --check --diff --lint "ruff check" --color .
             # darker -r ${base_ref} --check --diff --lint "ruff check" --color . 2>&1 | tee /dev/tty | grep '\[ruff\]'
