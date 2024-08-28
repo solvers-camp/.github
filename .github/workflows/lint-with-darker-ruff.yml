@@ -31,6 +31,8 @@
             #   git fetch origin ${base_ref}:${base_ref}
     
           - name: Lint Code
+            env :
+              base_ref: ${{ github.event.pull_request.base.ref }}
             run: |
               darker -r origin/${base_ref} --check --diff --lint "ruff check" --color .
             #   darker -r origin/${base_ref} --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
