@@ -27,13 +27,12 @@
           run: |
             pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292
   
-        - name: Show Ruff Configuration
-          run: |
-            echo "Ruff Conf in root repo"
-            ruff check . --show-settings --config ./ruff.toml
+        # - name: Show Ruff Configuration
+        #   run: |
+        #     echo "Ruff Conf in root repo"
+        #     ruff check . --show-settings --config ./ruff.toml
 
         - name: Analyze Code
           run: |
             darker -r origin/base --check --diff --lint "ruff check --config .config/ruff.toml" --color .
             # darker -r origin/base --check --diff --lint "ruff check" --color .
-            
