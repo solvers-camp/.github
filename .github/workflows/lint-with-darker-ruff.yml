@@ -29,4 +29,4 @@
   
         - name: Analyze Code
           run: |
-            darker -r origin/base --check --diff --lint "ruff check" --color .
+            darker -r origin/base --check --diff --lint "ruff check" --color . | grep '\[ruff\]'
