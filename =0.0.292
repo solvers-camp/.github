@@ -1,0 +1,6 @@
+Collecting ruff
+  Downloading ruff-0.6.2-py3-none-win_amd64.whl.metadata (25 kB)
+Downloading ruff-0.6.2-py3-none-win_amd64.whl (8.8 MB)
+   ---------------------------------------- 8.8/8.8 MB 15.6 MB/s eta 0:00:00
+Installing collected packages: ruff
+Successfully installed ruff-0.6.2
