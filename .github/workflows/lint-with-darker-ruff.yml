@@ -30,8 +30,10 @@
         - name: Show Ruff Configuration
           run: |
             echo "Ruff Conf in root repo"
-            ruff check . --show-settings
+            ruff check . --show-settings --config ./ruff.toml
 
         - name: Analyze Code
           run: |
-            darker -r origin/base --check --diff --lint "ruff check" --color .
+            darker -r origin/base --check --diff --lint "ruff check --config .config/ruff.toml" --color .
+            # darker -r origin/base --check --diff --lint "ruff check" --color .
+            
