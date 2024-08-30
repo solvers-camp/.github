@@ -36,7 +36,7 @@
             path: repo
   
         - name: Fetch base
-          run: |
+          run: |  
             cd repo
             git fetch https://github.com/${{ github.event.pull_request.base.repo.full_name }} ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
   
@@ -49,8 +49,8 @@
             ls -ltr
             cd repo
             # cat ../reusable-actions/.github/ruff.toml
-            cat reusable-actions/ruff.toml
-            darker -r origin/base --check --diff --lint "ruff check" --config ../reusable-actions/.github/ruff.toml --color .
+            cat ../reusable-actions/ruff.toml
+            darker -r origin/base --check --diff --lint "ruff check" --config ../reusable-actions/ruff.toml --color .
             # darker -r origin/base --check --diff --lint "ruff check" --config ../reusable-actions/.github/ruff.toml --color .
             # darker -r origin/base --check --diff --lint "ruff --show-settings" --config ../reusable-actions/.github/ruff.toml --color .
             
