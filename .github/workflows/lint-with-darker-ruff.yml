@@ -34,6 +34,7 @@
 
         - name: Analyze Code
           run: |
-            darker -r origin/base --check --diff --lint "ruff check --config ./ruff.toml" --color .
+            darker -r origin/base --check --diff --lint "ruff check --config .github/workflows/ruff.toml" --color .
+            # darker -r origin/base --check --diff --lint "ruff check --config ./ruff.toml" --color .
             # darker -r origin/base --check --diff --lint "ruff check --config .config/ruff.toml" --color .
             # darker -r origin/base --check --diff --lint "ruff check" --color .
