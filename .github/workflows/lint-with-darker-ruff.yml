@@ -24,7 +24,7 @@
           with:
             repository: solvers-camp/.github
             path: reusable-actions
-            # ref: feature/ruff-toml
+            ref: ruff-toml
   
         - name: Checkout head
           uses: actions/checkout@v4
