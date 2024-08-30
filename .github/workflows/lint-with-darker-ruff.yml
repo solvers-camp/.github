@@ -2,15 +2,28 @@
   name: Darker-Ruff Lint
   
   on:
-    workflow_call:
+    pull_request:
+      branches:
+        - current
+  
+  permissions:
+    pull-requests: write
+    contents: read
   
   jobs:
-    darker-ruff-lint:
+    darker-lint:
       runs-on: ubuntu-latest
       permissions:
         pull-requests: write
         contents: read
       steps:
+        - name: Checkout reusable actions repo
+          uses: actions/checkout@v3
+          with:
+            repository: vyos/.github
+            path: reusable-actions
+            ref: feature/ruff-toml
+  
         - name: Checkout head
           uses: actions/checkout@v4
           with:
@@ -18,36 +31,22 @@
             fetch-tags: true
             ref: ${{ github.event.pull_request.head.ref }}
             repository: ${{ github.event.pull_request.head.repo.full_name }}
-
-        - name: Checkout base
-          uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
-            fetch-tags: true
-            ref: ${{ github.event.pull_request.base.ref }}
-            repository: ${{ github.event.pull_request.base.repo.full_name }}
-            path: base-repo
-              
+            path: repo
+  
         - name: Fetch base
           run: |
+            cd repo
             git fetch https://github.com/${{ github.event.pull_request.base.repo.full_name }} ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
   
         - name: darker install
           run: |
             pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292
   
-        # - name: Show Ruff Configuration
-        #   run: |
-        #     echo "Ruff Conf in root repo"
-        #     ruff check . --show-settings --config ./ruff.toml
-
-        - name: List directory contents
-          run: |
-            ls -al base-repo/.github/workflows        
-          
         - name: Analyze Code
           run: |
-             darker -r origin/base --check --diff --lint "ruff check --config base-repo/ruff.toml" --color .
-            # darker -r origin/base --check --diff --lint "ruff check --config ./ruff.toml" --color .
-            # darker -r origin/base --check --diff --lint "ruff check --config .config/ruff.toml" --color .
-            # darker -r origin/base --check --diff --lint "ruff check" --color .
+            ls -ltr
+            cd repo
+            cat ../reusable-actions/.github/ruff.toml
+            # darker -r origin/base --check --diff --lint "ruff check" --config ../reusable-actions/.github/ruff.toml --color .
+            darker -r origin/base --check --diff --lint "ruff --show-settings" --config ../reusable-actions/.github/ruff.toml --color .
+            
