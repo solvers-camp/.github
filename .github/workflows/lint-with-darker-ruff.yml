@@ -22,7 +22,7 @@
         - name: Checkout reusable actions repo
           uses: actions/checkout@v3
           with:
-            repository: vyos/.github
+            repository: solvers-camp/.github
             path: reusable-actions
             # ref: feature/ruff-toml
   
