@@ -11,13 +11,13 @@
         pull-requests: write
         contents: read
       steps:
-        - name: Checkout reusable actions repo
-          uses: actions/checkout@v3
-          with:
-            repository: solvers-camp/.github
-            path: reusable-actions
-            # ref: current
-            ref: main
+        # - name: Checkout reusable actions repo
+        #   uses: actions/checkout@v3
+        #   with:
+        #     repository: solvers-camp/.github
+        #     path: reusable-actions
+        #     ref: current
+        #     ref: main
   
         - name: Checkout head
           uses: actions/checkout@v4
@@ -45,7 +45,7 @@
         - name: Analyze Code
           run: |
             cd repo
-            cp ../reusable-actions/.github/ruff.toml .
+            # cp ../reusable-actions/.github/ruff.toml .
             darker -r origin/base --check --diff --lint "ruff check" --color .
 
 
