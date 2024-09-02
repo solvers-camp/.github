@@ -1,19 +1,11 @@
 ---
   name: Darker-Ruff Lint
   
-  # on:
-  #   pull_request:
-  #     branches:
-  #       - current
   on:
     workflow_call:
-
-  # permissions:
-  #   pull-requests: write
-  #   contents: read
   
   jobs:
-    darker-lint:
+    darker-ruff-lint:
       runs-on: ubuntu-latest
       permissions:
         pull-requests: write
@@ -24,7 +16,8 @@
           with:
             repository: solvers-camp/.github
             path: reusable-actions
-            # ref: feature/ruff-toml
+            # ref: current
+            ref: main
   
         - name: Checkout head
           uses: actions/checkout@v4
@@ -36,25 +29,25 @@
             path: repo
   
         - name: Fetch base
-          run: |  
+          run: |
             cd repo
             git fetch https://github.com/${{ github.event.pull_request.base.repo.full_name }} ${{ github.event.pull_request.base.ref }}:refs/remotes/origin/base
   
-        - name: darker install
+        - name: Setup python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.11' 
+  
+        - name: Install darker ruff 
           run: |
             pip install git+https://github.com/akaihola/darker.git@master ruff>=0.0.292
   
         - name: Analyze Code
           run: |
-            # ls -ltr
             cd repo
-            # cat ../reusable-actions/.github/ruff.toml
-            
-            # cat ../reusable-actions/ruff.toml
-            darker -r origin/base --check --diff --lint "ruff check" --config ../reusable-actions/ruff.toml --color .
-            
-            # darker -r origin/base --check --diff --lint "ruff check" --config ../reusable-actions/.github/ruff.toml --color .
-            # darker -r origin/base --check --diff --lint "ruff --show-settings" --config ../reusable-actions/ruff.toml --color .
+            cp ../reusable-actions/.github/ruff.toml .
+            darker -r origin/base --check --diff --lint "ruff check" --color .
+
 
         #     set +e
         #     output=$(darker -r origin/base --check --diff --lint "ruff check" --config ../reusable-actions/ruff.toml --color .)
