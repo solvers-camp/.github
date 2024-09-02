@@ -17,6 +17,7 @@
         #     repository: Thilaga-26/.github-repo
         #     path: reusable-actions
         #     # ref: current
+        #     ref: main
   
         - name: Checkout head
           uses: actions/checkout@v4
